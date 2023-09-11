@@ -3,8 +3,8 @@ package daoImplTests;
 import beans.MeetingRoom;
 import enums.Amenities;
 import exceptions.MeetingRoomNotFoundException;
-import persistence.dao.MeetingRoomDAO;
-import persistence.dao.impl.MeetingRoomDAOImpl;
+import dao.MeetingRoomDAO;
+import dao.MeetingRoomDAOImpl;
 
 import java.sql.SQLException;
 import java.util.Set;

@@ -1,6 +1,7 @@
 package beans;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.StringJoiner;
 
 public class Booking {
@@ -11,8 +12,8 @@ public class Booking {
 	/// booking
 	private String bookedForMeetingRoom;
 	private LocalDate dateOfBooking;
-	private LocalDate startTime;
-	private LocalDate endTime;
+	private LocalTime startTime;
+	private LocalTime endTime;
 
 	/// refers to the PK of the User who has made the booking
 	private int bookingDoneBy;
@@ -22,8 +23,8 @@ public class Booking {
 	}
 
 	/// parameterized constructor
-	public Booking(int bookingId, String bookedForMeetingRoom, LocalDate dateOfBooking, LocalDate startTime,
-			LocalDate endTime, int bookingDoneBy) {
+	public Booking(int bookingId, String bookedForMeetingRoom, LocalDate dateOfBooking, LocalTime startTime,
+			LocalTime endTime, int bookingDoneBy) {
 		this.bookingId = bookingId;
 		this.bookedForMeetingRoom = bookedForMeetingRoom;
 		this.dateOfBooking = dateOfBooking;
@@ -57,19 +58,19 @@ public class Booking {
 		this.dateOfBooking = dateOfBooking;
 	}
 
-	public LocalDate getStartTime() {
+	public LocalTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(LocalDate startTime) {
+	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public LocalDate getEndTime() {
+	public LocalTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(LocalDate endTime) {
+	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
 	}
 

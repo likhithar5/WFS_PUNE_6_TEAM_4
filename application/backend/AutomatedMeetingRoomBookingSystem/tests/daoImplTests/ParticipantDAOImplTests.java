@@ -1,8 +1,8 @@
 package daoImplTests;
 
 import beans.Participant;
-import persistence.dao.ParticipantsDAO;
-import persistence.dao.impl.ParticipantDAOImpl;
+import dao.ParticipantsDAO;
+import dao.ParticipantDAOImpl;
 
 import java.sql.SQLException;
 import java.util.List;
