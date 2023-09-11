@@ -1,4 +1,4 @@
-package persistence.dao;
+package dao;
 
 import beans.MeetingRoom;
 import exceptions.MeetingRoomNotFoundException;
