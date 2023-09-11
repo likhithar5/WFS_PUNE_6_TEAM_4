@@ -21,15 +21,16 @@ import persistence.database.DatabaseFactory;
 
 public class MeetingDaoImpl implements MeetingDao {
 	private static final String INSERT_MEETING = "insert into Meeting (meetingId, meetingTitle, organizerId, meetingDate, startTime, endTime, meetingType, meetingRoom, participants, meetingDescription) values (?,?,?,?,?,?,?,?,?,?)";
-	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select meetingId, meetingTitle, organizerId, meetingDate, startTime, endTime, meetingType, meetingRoom, participants, meetingDescription from Meeting where organizedBy = ?";
+	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select meetingId, meetingTitle, organizerId, meetingDate, startTime, endTime, meetingType, meetingRoom, participants, meetingDescription from Meeting where organizerId = ?";
 	private static final String SELECT_ALL_MEETINGS = "Select * from Meeting";
+
 	private static final String SELECT_MEETING_BY_ID = "Select * From Meeting where meetingId = ?";
 	private static final String UPDATE_MEETING = "UPDATE Meeting SET  meetingTtitle=?, meetingDate=?, startTime=?, endTime=?,  type=?, participants=?, meetingDescription=? WHERE meetingId=?";
 	private static final String DELETE_MEETING_BY_ID = "DELETE FROM Meeting WHERE meetingId=?";
 	private final Connection conn;
 	Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
 
-	MeetingDaoImpl() {
+	public MeetingDaoImpl() {
 		conn = database.getConnection();
 	}
 
@@ -106,10 +107,9 @@ public class MeetingDaoImpl implements MeetingDao {
 	@Override
 	public Meeting fetchMeetingById(int meetingId) throws MeetingNotFoundException {
 		Meeting meeting = null;
-		try (PreparedStatement stmt = conn.prepareStatement(SELECT_MEETING_BY_ID);
-				ResultSet result = stmt.executeQuery()) {
+		try (PreparedStatement stmt = conn.prepareStatement(SELECT_MEETING_BY_ID);) {
 			stmt.setInt(1, meetingId);
-
+			ResultSet result = stmt.executeQuery();
 			if (result.next()) {
 				// Meeting found, create a Meeting object and set its properties
 				meeting = mapToMeeting(result);
@@ -130,11 +130,10 @@ public class MeetingDaoImpl implements MeetingDao {
 	public List<Meeting> fetchMeetingsByOrganizerId(int managerId) {
 		List<Meeting> meetings = new ArrayList<>();
 
-		try (PreparedStatement statement = conn.prepareStatement(SELECT_MEETING_BY_ORGANIZERID);
-				ResultSet result = statement.executeQuery()) {
+		try (PreparedStatement statement = conn.prepareStatement(SELECT_MEETING_BY_ORGANIZERID);) {
 
 			statement.setInt(1, managerId);
-
+			ResultSet result = statement.executeQuery();
 			while (result.next()) {
 				Meeting meeting = mapToMeeting(result);
 				meetings.add(meeting);
