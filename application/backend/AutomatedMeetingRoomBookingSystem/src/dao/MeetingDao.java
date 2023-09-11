@@ -16,6 +16,6 @@ public interface MeetingDao {
 
 	public boolean deleteMeetingById(int meetingId) throws MeetingNotFoundException;
 
-	public boolean updateMeeting(Meeting meeting);
+	public boolean updateMeeting(Meeting meeting) throws MeetingNotFoundException;
 
 }

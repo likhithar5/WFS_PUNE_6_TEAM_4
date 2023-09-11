@@ -166,7 +166,7 @@ public class MeetingDaoImpl implements MeetingDao {
 	}
 
 	@Override
-	public boolean updateMeeting(Meeting meeting) {
+	public boolean updateMeeting(Meeting meeting) throws  MeetingNotFoundException {
 		try (PreparedStatement statement = conn.prepareStatement(UPDATE_MEETING);
 				ResultSet rs = statement.getGeneratedKeys()) {
 			statement.setString(1, meeting.getMeetingTitle()); // Replace 'meeting' with your Meeting object
