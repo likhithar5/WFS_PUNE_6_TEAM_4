@@ -1,8 +1,8 @@
-package persistence.dao.impl;
+package dao;
 
 import beans.Participant;
 import enums.DatabaseProduct;
-import persistence.dao.ParticipantsDAO;
+import dao.ParticipantsDAO;
 import persistence.database.Database;
 import persistence.database.DatabaseFactory;
 

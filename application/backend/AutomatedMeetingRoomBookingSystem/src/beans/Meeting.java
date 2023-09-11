@@ -1,13 +1,11 @@
 package beans;
 
-
-
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.StringJoiner;
 
 import enums.MeetingType;
-
 
 public class Meeting {
 
@@ -18,13 +16,14 @@ public class Meeting {
 	/// primary of the user who has organized this meeting
 	private int organizerId;
 	private LocalDate meetingDate;
-	private LocalDate startTime;
-	private LocalDate endTime;
+	private LocalTime startTime;
+	private LocalTime endTime;
 	private MeetingType meetingType;
-	/// refers to the PK of the meeting room which has been booked under this booking
+	/// refers to the PK of the meeting room which has been booked under this
+	/// booking
 	private String meetingRoom;
 
-	private List<User> participants;
+	private List<Integer> participants;
 	private String meetingDescription;
 
 	/// default constructor
@@ -32,8 +31,8 @@ public class Meeting {
 	}
 
 	/// parameterized constructor
-	public Meeting(int meetingId, String meetingTitle, int organizerId, LocalDate meetingDate, LocalDate startTime,
-			LocalDate endTime, MeetingType meetingType, List<User> participants, String meetingDescription) {
+	public Meeting(int meetingId, String meetingTitle, int organizerId, LocalDate meetingDate, LocalTime startTime,
+			LocalTime endTime, MeetingType meetingType, List<Integer> participants, String meetingDescription) {
 		this.meetingId = meetingId;
 		this.meetingTitle = meetingTitle;
 		this.organizerId = organizerId;
@@ -78,19 +77,19 @@ public class Meeting {
 		this.meetingDate = meetingDate;
 	}
 
-	public LocalDate getStartTime() {
+	public LocalTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(LocalDate startTime) {
+	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime;
 	}
 
-	public LocalDate getEndTime() {
+	public LocalTime getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(LocalDate endTime) {
+	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
 	}
 
@@ -102,11 +101,11 @@ public class Meeting {
 		this.meetingType = meetingType;
 	}
 
-	public List<User> getParticipants() {
+	public List<Integer> getParticipants() {
 		return participants;
 	}
 
-	public void setParticipants(List<User> participants) {
+	public void setParticipants(List<Integer> participants) {
 		this.participants = participants;
 	}
 
@@ -116,6 +115,14 @@ public class Meeting {
 
 	public void setMeetingDescription(String meetingDescription) {
 		this.meetingDescription = meetingDescription;
+	}
+
+	public String getMeetingRoom() {
+		return meetingRoom;
+	}
+
+	public void setMeetingRoom(String meetingRoom) {
+		this.meetingRoom = meetingRoom;
 	}
 
 	@Override
