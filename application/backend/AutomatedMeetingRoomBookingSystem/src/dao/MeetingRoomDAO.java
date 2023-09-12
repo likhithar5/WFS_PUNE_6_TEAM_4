@@ -1,9 +1,11 @@
 package dao;
 
 import beans.MeetingRoom;
+import enums.Amenities;
 import exceptions.MeetingRoomNotFoundException;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface MeetingRoomDAO {
 
@@ -53,4 +55,13 @@ public interface MeetingRoomDAO {
      * @author Sayantan Das
      * */
     MeetingRoom getMeetingRoomById(String meetingRoomName) throws SQLException, MeetingRoomNotFoundException;
+
+    /**
+     * Searches for meeting rooms having at least one of the expected amenities.
+     * @param expectedAmenities The amenities expected to have as per user's requirement.
+     * @return List of MeetingRoom
+     * @throws SQLException For any kind of Sql related exceptions.
+     * @author Sayantan Das
+     * */
+    List<MeetingRoom> findByAmenities(List<Amenities> expectedAmenities) throws SQLException;
 }
