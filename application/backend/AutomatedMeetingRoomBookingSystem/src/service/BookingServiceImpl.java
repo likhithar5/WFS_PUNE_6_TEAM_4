@@ -104,6 +104,7 @@ public class BookingServiceImpl implements BookingService{
                 organizeMeetingRequest.getMeetingStartTime(),
                 organizeMeetingRequest.getMeetingStartTime().plusMinutes(organizeMeetingRequest.getDurationInMinutes()),
                 organizeMeetingRequest.getMeetingType(),
+                organizeMeetingRequest.getBookedMeetingRoomName(),
                 organizeMeetingRequest.getParticipants(),
                 organizeMeetingRequest.getMeetingDescription()
         );
