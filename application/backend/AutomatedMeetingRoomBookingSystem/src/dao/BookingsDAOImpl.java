@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class BookingsDAOImpl implements BookingsDAO {
@@ -93,6 +95,60 @@ public class BookingsDAOImpl implements BookingsDAO {
                 );
             }
             return bookingList;
+        }
+    }
+
+    @Override
+    public Map<String, List<Booking>> getBookingsByMeetingRoomName(List<String> meetingRoomNames) throws SQLException {
+        final StringBuilder query =
+                new StringBuilder("SELECT B.meetingRoom, B.meetingDate, B.startTime, B.endTime " +
+                        "FROM bookings B INNER JOIN meeting_room MR on B.meetingRoom = MR.meetingRoomName " +
+                        "WHERE B.meetingRoom in ("
+                );
+
+        /// dynamically preparing the prepared statement query parameter list
+        int numOfParameters = meetingRoomNames.size();
+        for(int i=0;i<numOfParameters;++i){
+            query.append('?');
+            if(i<numOfParameters-1)
+                query.append(',');
+        }
+        query.append(") order by B.meetingRoom, B.meetingDate, B.startTime, B.endTime;");
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query.toString())){
+            for(int i=0;i<numOfParameters;++i){
+                preparedStatement.setString(i+1, meetingRoomNames.get(i));
+            }
+            ResultSet rs = preparedStatement.executeQuery();
+            Map<String, List<Booking>> bookingsGroupedByMeetingRoomName = new HashMap<>();
+            while(rs.next()){
+                String roomName = rs.getString("meetingRoom");
+                if(!bookingsGroupedByMeetingRoomName.containsKey(roomName))
+                {
+                    List<Booking> bookings = new ArrayList<>();
+                    bookings.add(new Booking(
+                            -1,
+                            rs.getString("meetingRoom"),
+                            rs.getDate("meetingDate").toLocalDate(),
+                            rs.getTime("startTime").toLocalTime(),
+                            rs.getTime("endTime").toLocalTime(),
+                            -1
+                    ));
+                    bookingsGroupedByMeetingRoomName.put(roomName, bookings);
+                }
+                else
+                    bookingsGroupedByMeetingRoomName.get(roomName).add(
+                            new Booking(
+                                    -1,
+                                    rs.getString("meetingRoom"),
+                                    rs.getDate("meetingDate").toLocalDate(),
+                                    rs.getTime("startTime").toLocalTime(),
+                                    rs.getTime("endTime").toLocalTime(),
+                                    -1
+                            )
+                    );
+            }// end while loop
+            return bookingsGroupedByMeetingRoomName;
         }
     }
 
