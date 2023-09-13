@@ -5,6 +5,7 @@ import exceptions.BookingNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface BookingsDAO {
 
@@ -39,6 +40,8 @@ public interface BookingsDAO {
      * @author Sayantan Das
      */
     public List<Booking> getAllBookings() throws SQLException;
+
+    Map<String, List<Booking>> getBookingsByMeetingRoomName(List<String> meetingRoomNames) throws SQLException;
 
     /**
      * Updates the booking record that is specified by the id and

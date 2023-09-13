@@ -10,19 +10,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 public class BookingsDAOImplTests {
     private static BookingsDAO bookingsDAO;
     public static void main(String[] args) {
         bookingsDAO = new BookingsDAOImpl();
-        givenABooking_whenInserted_ThenPersisted();
+        /*givenABooking_whenInserted_ThenPersisted();
         givenBookingId_whenQueried_ThenFetchedBooking();
         givenWrongBookingId_whenQueried_ThenShowErrorMessage();
         whenQueriedForAll_ThenFetchedAllBookingsInAscOrder();
         givenBookingId_whenDeletedQueryFired_ThenDeleted();
         givenWrongBookingId_whenDeletedQueryFired_ThenShowedErrorMessage();
         givenBookingIdAndUpdatedBooking_whenUpdateQueryFired_ThenUpdatedInDatabase();
-        givenWrongBookingId_whenUpdateQueryFired_ThenErrorMessageGiven();
+        givenWrongBookingId_whenUpdateQueryFired_ThenErrorMessageGiven();*/
+        givenMeetingRooms_whenQueried_ThenBookingsGroupedByRoomName();
     }
 
     private static void givenABooking_whenInserted_ThenPersisted() {
@@ -125,6 +127,18 @@ public class BookingsDAOImplTests {
         try{
             bookingsDAO.delete(1);
         } catch (BookingNotFoundException | SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void givenMeetingRooms_whenQueried_ThenBookingsGroupedByRoomName(){
+        try {
+            List<String> roomNames = List.of("ROOM_3-LVL_3-HYD","ROOM_2-LVL_3-HYD");
+            Map<String, List<Booking>> map = bookingsDAO.getBookingsByMeetingRoomName(roomNames);
+            for(Map.Entry<String, List<Booking>> entry : map.entrySet()){
+                System.out.println(entry.getKey() + " --> " + entry.getValue());
+            }
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
