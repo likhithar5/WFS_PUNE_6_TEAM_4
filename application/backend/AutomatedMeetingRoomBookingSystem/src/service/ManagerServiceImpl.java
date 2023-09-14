@@ -22,8 +22,8 @@ public class ManagerServiceImpl implements ManagerService{
 	}
 
 	@Override
-	public void createMeeting(Meeting meeting) {
-		meetingService.createMeeting(meeting);
+	public int createMeeting(Meeting meeting) throws SQLException {
+		return meetingService.createMeeting(meeting);
 	}
 
 	@Override

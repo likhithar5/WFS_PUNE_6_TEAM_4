@@ -1,5 +1,7 @@
 import beans.MeetingRoom;
 import enums.Amenities;
+import service.AdminService;
+import service.AdminServiceImpl;
 import service.MeetingRoomService;
 import service.MeetingRoomServiceImpl;
 
@@ -8,9 +10,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class CreateMeetingRoomTest {
-    private static final MeetingRoomService meetingRoomService;
+    private static final AdminService adminService;
     static{
-        meetingRoomService = new MeetingRoomServiceImpl();
+        adminService = new AdminServiceImpl();
     }
     public static void main(String[] args) {
         givenAllInput_whenExecuted_ThenSaved();
@@ -18,23 +20,19 @@ public class CreateMeetingRoomTest {
 
     private static void givenAllInput_whenExecuted_ThenSaved() {
         /// User input
-        String roomName = "ROOM_2-LVL_3-PUN";
-        int seatingCapacity = 30;
-        Set<Amenities> amenitiesList = Set.of(Amenities.PROJECTOR,Amenities.WHITEBOARD);
+        String roomName = "ROOM_7-LVL_5-HYD";
+        int seatingCapacity = 120;
+        Set<Amenities> amenitiesList = Set.of(Amenities.PROJECTOR,Amenities.WHITEBOARD, Amenities.COFFEE_MACHINE, Amenities.WIFI_CONNECTION);
         int perHourCharge = calculatePerHourCharges(amenitiesList);
-        try {
-            if(meetingRoomService.addNewMeetingRoom(new MeetingRoom(
-                    roomName,
-                    seatingCapacity,
-                    0,
-                    amenitiesList,
-                    perHourCharge
+        if(adminService.createMeetingRoom(new MeetingRoom(
+                roomName,
+                seatingCapacity,
+                0,
+                amenitiesList,
+                perHourCharge
 
-            )))
-                System.out.println("Added a new meeting room");
-        } catch (SQLException e) {
-            Logger.getLogger(CreateMeetingRoomTest.class.getName()).severe(e.getMessage());
-        }
+        )))
+            System.out.println("Added a new meeting room");
 
     }
 

@@ -1,15 +1,15 @@
 package service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 import beans.Meeting;
-import beans.MeetingRoom;
 import enums.MeetingType;
 
 public interface ManagerService {
-	void createMeeting(Meeting meeting);
+	int createMeeting(Meeting meeting) throws SQLException;
 	
 	List<Meeting> getOrganizedByManager(int managerId);
 	
