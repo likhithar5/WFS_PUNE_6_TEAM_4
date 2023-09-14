@@ -1,12 +1,13 @@
 package dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import beans.Meeting;
 import exceptions.MeetingNotFoundException;
 
 public interface MeetingDao {
-	public int createMeeting(Meeting meeting);
+	public int createMeeting(Meeting meeting) throws SQLException;
 
 	public List<Meeting> fetchAllMeetings();
 

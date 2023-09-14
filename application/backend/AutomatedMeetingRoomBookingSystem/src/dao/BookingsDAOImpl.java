@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class BookingsDAOImpl implements BookingsDAO {
 
     private static final String CREATE_NEW_BOOKING =
-            "INSERT INTO BOOKINGS (meetingRoom, meetingDate, startTime, endTime, bookedBy) VALUES (?,?,?,?,?)";
+            "INSERT INTO bookings (booking_for_meeting_room, date, startTime, endTime, booked_by) VALUES (?,?,?,?,?)";
     private static final String GET_BOOKING_BY_ID = "SELECT * FROM BOOKINGS WHERE id = ?";
 
     private static final String GET_ALL_BOOKINGS =

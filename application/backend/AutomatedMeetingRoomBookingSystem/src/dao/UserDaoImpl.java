@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import persistence.database.*;
-import persistence.database.types.*;
+//import persistence.database.types.*;
 import beans.User;
-import exceptions.UserAlreadyExistException;
-import exceptions.UserNotFoundException;
+//import exceptions.UserAlreadyExistException;
+//import exceptions.UserNotFoundException;
 
 public class UserDaoImpl implements UserDao {
 
@@ -60,7 +60,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public boolean addUser(User u) throws UserAlreadyExistException{
+	public boolean addUser(User u) /*throws UserAlreadyExistException*/{
 	
 			try {
 				PreparedStatement statement = conn.prepareStatement(INSERT_USER);
@@ -84,7 +84,8 @@ public class UserDaoImpl implements UserDao {
 
 				int resultSet = statement.executeUpdate();
 				if (resultSet == 0) {
-					throw new UserAlreadyExistException("User already exist with id : "+u.getUserId());
+					//throw new UserAlreadyExistException("User already exist with id : "+u.getUserId());
+					System.out.println("UserAlreadyExistException");
 				}
 
 			} catch (Exception e) {
@@ -94,7 +95,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User getUserByIdAndEmail(int user_id, String user_email) throws UserNotFoundException{
+	public User getUserByIdAndEmail(int user_id, String user_email) /*throws UserNotFoundException*/{
 		
 		    User user = null;
 			try {
@@ -115,7 +116,8 @@ public class UserDaoImpl implements UserDao {
 					//set date
 				}
 				else {
-					throw new UserNotFoundException("User Not Found with id :"+user_id);
+					//throw new UserNotFoundException("User Not Found with id :"+user_id);
+					System.out.println("UserNotFoundException");
 				}
 			   System.out.println(user);
 			}catch(Exception e) {
@@ -136,7 +138,8 @@ public class UserDaoImpl implements UserDao {
 			if(rs.next()) {
 				credits = rs.getInt(1);
 			}else {
-				throw new UserNotFoundException("User Not Found with id :"+userId);
+				//throw new UserNotFoundException("User Not Found with id :"+userId);
+				System.out.println("UserNotFoundException");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -145,7 +148,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public void setUserCredits(int userId, int credits) throws UserNotFoundException {
+	public void setUserCredits(int userId, int credits)/* throws UserNotFoundException*/ {
 		PreparedStatement ps = null;
 
 		try {
@@ -158,7 +161,8 @@ public class UserDaoImpl implements UserDao {
 
 			if (!resultSet.next()) {
 				// The user does not exist, throw a custom exception
-				throw new UserNotFoundException("User with ID " + userId + " not found");
+				//throw new UserNotFoundException("User with ID " + userId + " not found");
+				System.out.println("UserNotFoundException");
 			}
 
 			ps = conn.prepareStatement(UPDATE_CREDITS);

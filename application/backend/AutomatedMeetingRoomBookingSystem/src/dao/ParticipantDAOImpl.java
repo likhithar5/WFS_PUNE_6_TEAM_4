@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class ParticipantDAOImpl implements ParticipantsDAO {
     private static final String INSERT_PARTICIPANT =
-            "INSERT INTO PARTICIPANTS (userId,meetingId) VALUES (?,?)";
+            "INSERT INTO PARTICIPANTS (user_id,meeting_id) VALUES (?,?)";
 
     private static final String DELETE_PARTICIPANT =
             "DELETE FROM PARTICIPANTS WHERE userId = ? AND meetingId = ?";
