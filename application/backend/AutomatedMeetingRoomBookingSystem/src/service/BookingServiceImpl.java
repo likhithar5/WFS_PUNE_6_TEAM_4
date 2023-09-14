@@ -3,10 +3,8 @@ package service;
 import beans.Booking;
 import beans.Meeting;
 import beans.MeetingRoom;
-import dao.BookingsDAO;
-import dao.BookingsDAOImpl;
-import dao.MeetingDao;
-import dao.MeetingDaoImpl;
+import beans.Participant;
+import dao.*;
 import dto.OrganizeMeetingRequest;
 
 import java.sql.SQLException;
@@ -17,15 +15,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BookingServiceImpl implements BookingService{
     private final BookingsDAO bookingsDAO;
     private final MeetingDao meetingDao;
+    private final ParticipantsDAO participantsDAO;
 
     public BookingServiceImpl() {
         this.bookingsDAO = new BookingsDAOImpl();
         this.meetingDao = new MeetingDaoImpl();
+        this.participantsDAO = new ParticipantDAOImpl();
     }
 
     @Override
@@ -96,8 +97,10 @@ public class BookingServiceImpl implements BookingService{
 
     @Override
     public boolean createBooking(OrganizeMeetingRequest organizeMeetingRequest) throws SQLException {
+        /// Adding meeting to the meetings table
+        int meetingId = generateMeetingId();
         Meeting meeting = new Meeting(
-                Instant.now().getNano(),
+                meetingId,
                 organizeMeetingRequest.getMeetingTitle(),
                 organizeMeetingRequest.getOrganizedBy(),
                 organizeMeetingRequest.getMeetingDate(),
@@ -105,11 +108,22 @@ public class BookingServiceImpl implements BookingService{
                 organizeMeetingRequest.getMeetingStartTime().plusMinutes(organizeMeetingRequest.getDurationInMinutes()),
                 organizeMeetingRequest.getMeetingType(),
                 organizeMeetingRequest.getBookedMeetingRoomName(),
-                organizeMeetingRequest.getParticipants(),
+                null,
                 organizeMeetingRequest.getMeetingDescription()
         );
         int rowsAffectedInMeetingsTable = meetingDao.createMeeting(meeting);
         System.out.println("rowsAffectedInMeetingsTable = " + rowsAffectedInMeetingsTable);
+
+        /// Adding meeting participants to the participants table
+        List<Participant> participantListForTheMeeting =
+                organizeMeetingRequest.getParticipants()
+                        .stream()
+                        .map(userId -> new Participant(userId,meetingId))
+                        .collect(Collectors.toList());
+        boolean areAllParticipantsAdded = participantsDAO.add(participantListForTheMeeting);
+        if(areAllParticipantsAdded)
+            System.out.println("Participants Added...");
+        /// Adding booking to the bookings table
         Booking booking = new Booking(
                 Instant.now().getNano(),
                 organizeMeetingRequest.getBookedMeetingRoomName(),
@@ -120,7 +134,11 @@ public class BookingServiceImpl implements BookingService{
         );
         boolean isBookingRecordCreated = bookingsDAO.create(booking);
         System.out.println("isBookingRecordCreated = " + isBookingRecordCreated);
-        return rowsAffectedInMeetingsTable>0 && isBookingRecordCreated;
+        return rowsAffectedInMeetingsTable>0 && areAllParticipantsAdded && isBookingRecordCreated;
+    }
+
+    private int generateMeetingId() {
+        return Instant.now().getNano();
     }
 
     private boolean isThereAnyBookingForGivenDate(List<Booking> list, LocalDate meetingDate){

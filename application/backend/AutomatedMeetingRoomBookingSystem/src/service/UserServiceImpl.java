@@ -1,14 +1,14 @@
-package services;
+package service;
 
 import java.util.List;
 
 import beans.User;
 import dao.UserDao;
 import dao.UserDaoImpl;
-import exceptions.UserAlreadyExistException;
-import exceptions.UserNotFoundException;
+//import exceptions.UserAlreadyExistException;
+//import exceptions.UserNotFoundException;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	private UserDao userdao;
 	public UserServiceImpl() {
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService{
 	public boolean addUser(User u) {
 		try {
 			return userdao.addUser(u);
-		} catch (UserAlreadyExistException e) {
+		} catch (/*UserAlreadyExist*/Exception e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
 	public User getUserByIdAndEmail(int user_id, String user_email) {
 		try {
 			return userdao.getUserByIdAndEmail(user_id, user_email);
-		} catch (UserNotFoundException e) {
+		} catch (/*UserNotFound*/Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -46,10 +46,10 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void setUserCredits(int userId, int credits)  {
+	public void setUserCredits(int userId, int credits) {
 		try {
 			userdao.setUserCredits(userId, credits);
-		} catch (UserNotFoundException e) {
+		} catch (/*UserNotFound*/Exception e) {
 			e.printStackTrace();
 		}
 	}

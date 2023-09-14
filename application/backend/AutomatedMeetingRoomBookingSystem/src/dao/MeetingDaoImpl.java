@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import beans.Meeting;
-import beans.User;
 import enums.DatabaseProduct;
 import enums.MeetingType;
 import exceptions.MeetingNotFoundException;
@@ -226,9 +224,26 @@ public class MeetingDaoImpl implements MeetingDao {
 	}
 
 	@Override
-	public int createMeeting(Meeting meeting) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int createMeeting(Meeting meeting) throws SQLException {
+		final String INSERT_MEETING_QUERY = new StringBuilder().append("INSERT INTO meetings")
+				.append("(id, title, meeting_type, meeting_date, start_time, end_time, description, organized_by, assigned_to_meeting_room)")
+				.append("VALUES (?, ?, ?, ?, ? ,? ,? ,? ,?)")
+				.toString();
+
+		try(PreparedStatement preparedStatement = conn.prepareStatement(INSERT_MEETING_QUERY)) {
+			preparedStatement.setInt(1,meeting.getMeetingId());
+			preparedStatement.setString(2, meeting.getMeetingTitle());
+			preparedStatement.setString(3, meeting.getMeetingType().name());
+			preparedStatement.setObject(4,meeting.getMeetingDate());
+			preparedStatement.setObject(5,meeting.getStartTime());
+			preparedStatement.setObject(6, meeting.getEndTime());
+			preparedStatement.setString(7, meeting.getMeetingDescription());
+			preparedStatement.setInt(8,meeting.getOrganizerId());
+			preparedStatement.setString(9,meeting.getMeetingRoom());
+
+			return preparedStatement.executeUpdate();
+
+        }
 	}
 
 }

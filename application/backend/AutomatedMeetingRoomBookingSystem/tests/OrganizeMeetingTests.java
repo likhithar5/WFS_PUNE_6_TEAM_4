@@ -38,8 +38,8 @@ public class OrganizeMeetingTests {
                 LocalDate.of(2022,10,21),
                 LocalTime.of(14,30,0),
                 45,
-                List.of(1001,1002,1003),
-                1004,
+                List.of(1041,1002,1201),
+                2101,
                 "ROOM_2-LVL_3-HYD",
                 "Overview of banking domain and salary account opening."
         );
