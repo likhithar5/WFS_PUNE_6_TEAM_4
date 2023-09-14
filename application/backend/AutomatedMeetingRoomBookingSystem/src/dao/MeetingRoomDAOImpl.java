@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class MeetingRoomDAOImpl implements MeetingRoomDAO {
-    private static final String CREATE_NEW_MEETING_ROOM_ENTRY = "INSERT INTO MEETING_ROOM VALUES (?,?,?,?,?)";
+    private static final String CREATE_NEW_MEETING_ROOM_ENTRY = "INSERT INTO MEETING_ROOMS (room_name, seating_capacity, ratings, hourly_cost, number_of_metings_held) VALUES (?,?,?,?,?)";
 
     private static final String MODIFY_MEETING_ROOM = "UPDATE MEETING_ROOM " +
             "SET seatingCapacity = ?, perHourCost = ?, ratings = ?, numberOfMeetingsHeld = ? " +
@@ -44,8 +44,8 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_MEETING_ROOM_ENTRY)) {
             preparedStatement.setString(1, meetingRoom.getMeetingRoomName());
             preparedStatement.setInt(2, meetingRoom.getSeatingCapacity());
-            preparedStatement.setInt(3, meetingRoom.getPerHourCost());
-            preparedStatement.setDouble(4, meetingRoom.getRatings());
+            preparedStatement.setDouble(3, meetingRoom.getRatings());
+            preparedStatement.setInt(4, meetingRoom.getPerHourCost());
             preparedStatement.setLong(5, meetingRoom.getNumOfMeetingsHeld());
 
             return preparedStatement.executeUpdate() > 0;
