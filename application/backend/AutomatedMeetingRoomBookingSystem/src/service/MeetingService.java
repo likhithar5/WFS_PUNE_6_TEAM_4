@@ -12,7 +12,7 @@ public interface MeetingService {
 
 	public Meeting fetchMeetingById(int meetingId);
 
-	List<Meeting> fetchMeetingsByOrganizerId(int meetingId);
+	List<Meeting> fetchMeetingsByOrganizerId(int organizerId);
 
 	public boolean deleteMeetingById(int meetingId);
 
