@@ -1,12 +1,13 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import beans.Meeting;
 import exceptions.MeetingNotFoundException;
 
 public interface MeetingService {
-	public int createMeeting(Meeting meeting);
+	public int createMeeting(Meeting meeting) throws SQLException;
 
 	public List<Meeting> fetchAllMeetings();
 

@@ -36,6 +36,11 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         return meetingRooms;
     }
 
+    @Override
+    public boolean addNewMeetingRoom(MeetingRoom meetingRoom) throws SQLException {
+        return meetingRoomDAO.create(meetingRoom);
+    }
+
     /**
      * Filter out meeting rooms based on the seating capacity from a list of meeting rooms.
      * @param meetingRoomList The list of meeting rooms from where to filter.

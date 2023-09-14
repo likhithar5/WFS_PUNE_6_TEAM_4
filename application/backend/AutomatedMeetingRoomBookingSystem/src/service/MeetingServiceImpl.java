@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import Utility.DaoFactory;
@@ -15,8 +16,8 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public int createMeeting(Meeting meeting) {
-		return 0;
+	public int createMeeting(Meeting meeting) throws SQLException {
+		return meetingDao.createMeeting(meeting);
 	}
 
 	@Override

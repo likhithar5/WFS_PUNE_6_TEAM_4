@@ -16,4 +16,13 @@ public interface MeetingRoomService {
      * @author Sayantan Das
      * */
     List<MeetingRoom> findMeetingRoomsBasedOnUserRequest(MeetingType meetingType, int seatsRequired) throws SQLException;
+
+
+    /**
+     * Method to add a new meeting rooms.
+     * @param meetingRoom The type of meeting to be organized by the user.
+     * @throws SQLException For any Sql related exceptions.
+     * @author Sayantan Das
+     * */
+    boolean addNewMeetingRoom(MeetingRoom meetingRoom) throws SQLException;
 }
