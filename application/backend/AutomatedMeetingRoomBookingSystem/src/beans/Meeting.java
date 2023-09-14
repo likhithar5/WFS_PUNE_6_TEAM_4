@@ -32,7 +32,7 @@ public class Meeting {
 
 	/// parameterized constructor
 	public Meeting(int meetingId, String meetingTitle, int organizerId, LocalDate meetingDate, LocalTime startTime,
-			LocalTime endTime, MeetingType meetingType, List<Integer> participants, String meetingDescription) {
+			LocalTime endTime, MeetingType meetingType, String meetingRoom, List<Integer> participants, String meetingDescription) {
 		this.meetingId = meetingId;
 		this.meetingTitle = meetingTitle;
 		this.organizerId = organizerId;
@@ -40,6 +40,7 @@ public class Meeting {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.meetingType = meetingType;
+		this.meetingRoom = meetingRoom;
 		this.participants = participants;
 		this.meetingDescription = meetingDescription;
 	}
@@ -127,11 +128,18 @@ public class Meeting {
 
 	@Override
 	public String toString() {
-		return new StringJoiner(", ", Meeting.class.getSimpleName() + "[", "]").add("meetingId=" + meetingId)
-				.add("meetingTitle='" + meetingTitle + "'").add("organizerId=" + organizerId)
-				.add("meetingDate=" + meetingDate).add("startTime=" + startTime).add("endTime=" + endTime)
-				.add("meetingType=" + meetingType).add("participants=" + participants)
-				.add("meetingDescription='" + meetingDescription + "'").toString();
+		return new StringJoiner(", ", Meeting.class.getSimpleName() + "[", "]")
+				.add("meetingId=" + meetingId)
+				.add("meetingTitle='" + meetingTitle + "'")
+				.add("organizerId=" + organizerId)
+				.add("meetingDate=" + meetingDate)
+				.add("startTime=" + startTime)
+				.add("endTime=" + endTime)
+				.add("meetingType=" + meetingType)
+				.add("meetingRoom='" + meetingRoom + "'")
+				.add("participants=" + participants)
+				.add("meetingDescription='" + meetingDescription + "'")
+				.toString();
 	}
 
 	@Override

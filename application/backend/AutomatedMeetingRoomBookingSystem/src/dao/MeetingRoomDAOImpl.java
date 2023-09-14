@@ -1,6 +1,7 @@
 package dao;
 
 import beans.MeetingRoom;
+import enums.Amenities;
 import enums.DatabaseProduct;
 import exceptions.MeetingRoomNotFoundException;
 import persistence.database.Database;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class MeetingRoomDAOImpl implements MeetingRoomDAO {
@@ -81,5 +83,45 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
             } else
                 throw new MeetingRoomNotFoundException("The meeting room with the given name does not exist.");
         }
+    }
+
+    @Override
+    public List<MeetingRoom> findByAmenities(List<Amenities> expectedAmenities) throws SQLException {
+        final StringBuilder query =
+                new StringBuilder("select amenities.meeting_room_name, seatingCapacity, perHourCost, ratings, numberOfMeetingsHeld, amenities.amenities " +
+                        "from amenities inner join meeting_room on amenities.meeting_room_name = meeting_room.meetingRoomName " +
+                        "where amenities.amenities in (");
+        for(int i=0;i<expectedAmenities.size();++i){
+            query.append("?");
+            if(i!= expectedAmenities.size()-1)
+                query.append(',');
+        }
+        query.append(')');
+        PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
+        for(int i=0;i<expectedAmenities.size();++i){
+            preparedStatement.setString((i+1), expectedAmenities.get(i).toString());
+        }
+        ResultSet rs = preparedStatement.executeQuery();
+        Map<String,MeetingRoom> meetingRoomMap = new HashMap<>();
+        while(rs.next()){
+            String id = rs.getString("meeting_room_name");
+            if(meetingRoomMap.containsKey(id))
+                meetingRoomMap.get(id).getAmenities().add(Amenities.valueOf(rs.getString("amenities")));
+            else{
+                Set<Amenities> amenities = new HashSet<>();
+                amenities.add(Amenities.valueOf(rs.getString("amenities")));
+                meetingRoomMap.put(
+                        id,
+                        new MeetingRoom(
+                                id,
+                                rs.getInt("seatingCapacity"),
+                                rs.getFloat("ratings"),
+                                amenities,
+                                rs.getInt("perHourCost")
+                        )
+                );
+            }
+        }// end of while
+        return new ArrayList<>(meetingRoomMap.values());
     }
 }
