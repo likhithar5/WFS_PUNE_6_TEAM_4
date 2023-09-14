@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import beans.Meeting;
@@ -18,71 +19,22 @@ import persistence.database.Database;
 import persistence.database.DatabaseFactory;
 
 public class MeetingDaoImpl implements MeetingDao {
-	private static final String INSERT_MEETING = "insert into Meeting (meetingId, meetingTitle, organizerId, meetingDate, startTime, endTime, meetingType, meetingRoom, participants, meetingDescription) values (?,?,?,?,?,?,?,?,?,?)";
-	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select meetingId, meetingTitle, organizerId, meetingDate, startTime, endTime, meetingType, meetingRoom, participants, meetingDescription from Meeting where organizerId = ?";
-	private static final String SELECT_ALL_MEETINGS = "Select * from Meeting";
+	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select * from Meetings where organizerId = ?";
+	private static final String SELECT_ALL_MEETINGS = "Select * from Meetings";
 
-	private static final String SELECT_MEETING_BY_ID = "Select * From Meeting where meetingId = ?";
-	private static final String UPDATE_MEETING = "UPDATE Meeting SET  meetingTtitle=?, meetingDate=?, startTime=?, endTime=?,  type=?, participants=?, meetingDescription=? WHERE meetingId=?";
-	private static final String DELETE_MEETING_BY_ID = "DELETE FROM Meeting WHERE meetingId=?";
+	private static final String SELECT_MEETING_BY_ID = "Select * From Meetings where meetingId = ?";
+	private static final String UPDATE_MEETING = "UPDATE Meetings SET  title=?, meeting_date=?, start_time=?, end_time=?,  meeting_type=?, description=? WHERE id=?";
+	private static final String DELETE_MEETING_BY_ID = "DELETE FROM Meetings WHERE id=?";
 	private final Connection conn;
-	Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
+
 
 	public MeetingDaoImpl() {
+		Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
+		if (database==null)
+			throw new RuntimeException("Error occurred in database. Database is null.");
+		database.createDatabase();
 		conn = database.getConnection();
 	}
-
-//	public int createMeeting(Meeting meeting) {
-//		int id = 0;
-//		try {
-//			List<String> availableRoomNames = bookingInformationService
-//					.getAvailableMeetingRoom(meeting.getMeetingDate(), meeting.getStartTime(), meeting.getEndTime(),
-//							MeetingType.valueOf(meeting.getMeetingType().name()))
-//					.stream().map(m -> m.getRoomName()).collect(Collectors.toList());
-//
-//			if (availableRoomNames.contains(meeting.getMeetingRoom())) {
-//				PreparedStatement statement = conn.prepareStatement(INSERT_MEETING, Statement.RETURN_GENERATED_KEYS);
-//				statement.setString(1, meeting.getMeetingTitle());
-//				statement.setInt(2, meeting.getOrganizerId());
-//				statement.setString(3, meeting.getMeetingDate().toString());
-//				statement.setString(4, meeting.getStartTime().toString());
-//				statement.setString(5, meeting.getEndTime().toString());
-//				statement.setString(6, meeting.getMeetingType().name());
-//				statement.setString(7, meeting.getMeetingRoom());
-//
-//				statement.executeUpdate();
-//
-//				ResultSet rs = statement.getGeneratedKeys();
-//				if (rs.next()) {
-//					id = rs.getInt(1);
-//				}
-//
-//				statement.close();
-//
-//				// Create members and store their names along with the meeting ID
-//				for (Integer memberName : meeting.getParticipants()) {
-//					createMember(id, memberName);
-//				}
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return id;
-//	}
-//
-//	private void createMember(int meetingId, int memberName) {
-//		try {
-//			PreparedStatement statement = conn.prepareStatement(INSERT_MEMBER);
-//			statement.setInt(1, meetingId);
-//			statement.setString(2, memberName);
-//			statement.executeUpdate();
-//			statement.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 	@Override
 	public List<Meeting> fetchAllMeetings() {
@@ -97,7 +49,7 @@ public class MeetingDaoImpl implements MeetingDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
 		}
 		return meetings;
 	}
@@ -118,7 +70,8 @@ public class MeetingDaoImpl implements MeetingDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+			throw new MeetingNotFoundException("Meeting with the specified ID does not exists");
 		}
 		return meeting;
 
@@ -136,10 +89,9 @@ public class MeetingDaoImpl implements MeetingDao {
 				Meeting meeting = mapToMeeting(result);
 				meetings.add(meeting);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+			throw new RuntimeException(e);
 		}
 
 		return meetings;
@@ -157,8 +109,8 @@ public class MeetingDaoImpl implements MeetingDao {
 				throw new MeetingNotFoundException("Meeting with ID not found.");
 			}
 			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
 			return false;
 		}
 	}
@@ -168,17 +120,12 @@ public class MeetingDaoImpl implements MeetingDao {
 		try (PreparedStatement statement = conn.prepareStatement(UPDATE_MEETING);
 				ResultSet rs = statement.getGeneratedKeys()) {
 			statement.setString(1, meeting.getMeetingTitle()); // Replace 'meeting' with your Meeting object
-			statement.setString(2, meeting.getMeetingDate().toString());
-			statement.setString(3, meeting.getStartTime().toString());
-			statement.setString(4, meeting.getEndTime().toString());
+			statement.setObject(2, meeting.getMeetingDate());
+			statement.setObject(3, meeting.getStartTime());
+			statement.setObject(4, meeting.getEndTime());
 			statement.setString(5, meeting.getMeetingType().toString());
-			// Convert the comma-separated sFtring to a list of integers
-			String participantsString = rs.getString(6);
-			List<Integer> participants = Arrays.stream(participantsString.split(",")).map(Integer::parseInt)
-					.collect(Collectors.toList());
-			meeting.setParticipants(participants);
-			statement.setString(7, meeting.getMeetingDescription());
-			statement.setInt(8, meeting.getMeetingId());
+			statement.setString(6, meeting.getMeetingDescription());
+			statement.setInt(7, meeting.getMeetingId());
 
 			int rowsAffected = statement.executeUpdate();
 
@@ -191,14 +138,10 @@ public class MeetingDaoImpl implements MeetingDao {
 				id = rs.getInt(1);
 			}
 			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+			throw new RuntimeException(e);
 		}
-
-		return false;
-
 	}
 
 	private Meeting mapToMeeting(ResultSet rs) throws SQLException {

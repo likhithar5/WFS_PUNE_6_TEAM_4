@@ -23,12 +23,12 @@ public class BookingsDAOImpl implements BookingsDAO {
     private static final String GET_BOOKING_BY_ID = "SELECT * FROM BOOKINGS WHERE id = ?";
 
     private static final String GET_ALL_BOOKINGS =
-            "SELECT * FROM BOOKINGS ORDER BY meetingDate ASC, startTime ASC, endTime ASC";
+            "SELECT * FROM bookings ORDER BY date ASC, startTime ASC, endTime ASC";
 
     private static final String MODIFY_BOOKING =
-            "UPDATE BOOKINGS SET meetingRoom = ?, meetingDate = ?, startTime = ?, endTime = ?, bookedBy = ? WHERE id = ?";
+            "UPDATE bookings SET booking_for_meeting_room = ?, date = ?, startTime = ?, endTime = ?, booked_by = ? WHERE id = ?";
 
-    private static final String DELETE_BOOKING = "DELETE FROM BOOKINGS WHERE id = ?";
+    private static final String DELETE_BOOKING = "DELETE FROM bookings WHERE id = ?";
     private final Connection connection;
 
     public BookingsDAOImpl() {
@@ -101,9 +101,9 @@ public class BookingsDAOImpl implements BookingsDAO {
     @Override
     public Map<String, List<Booking>> getBookingsByMeetingRoomName(List<String> meetingRoomNames) throws SQLException {
         final StringBuilder query =
-                new StringBuilder("SELECT B.meetingRoom, B.meetingDate, B.startTime, B.endTime " +
-                        "FROM bookings B INNER JOIN meeting_room MR on B.meetingRoom = MR.meetingRoomName " +
-                        "WHERE B.meetingRoom in ("
+                new StringBuilder("SELECT B.booking_for_meeting_room, B.date, B.startTime, B.endTime " +
+                        "FROM bookings B INNER JOIN meeting_rooms MR on B.booking_for_meeting_room = MR.room_name " +
+                        "WHERE B.booking_for_meeting_room in ("
                 );
 
         /// dynamically preparing the prepared statement query parameter list
@@ -113,7 +113,7 @@ public class BookingsDAOImpl implements BookingsDAO {
             if(i<numOfParameters-1)
                 query.append(',');
         }
-        query.append(") order by B.meetingRoom, B.meetingDate, B.startTime, B.endTime;");
+        query.append(") order by B.booking_for_meeting_room, B.date, B.startTime, B.endTime;");
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(query.toString())){
             for(int i=0;i<numOfParameters;++i){
@@ -122,14 +122,14 @@ public class BookingsDAOImpl implements BookingsDAO {
             ResultSet rs = preparedStatement.executeQuery();
             Map<String, List<Booking>> bookingsGroupedByMeetingRoomName = new HashMap<>();
             while(rs.next()){
-                String roomName = rs.getString("meetingRoom");
+                String roomName = rs.getString("booking_for_meeting_room");
                 if(!bookingsGroupedByMeetingRoomName.containsKey(roomName))
                 {
                     List<Booking> bookings = new ArrayList<>();
                     bookings.add(new Booking(
                             -1,
-                            rs.getString("meetingRoom"),
-                            rs.getDate("meetingDate").toLocalDate(),
+                            rs.getString("booking_for_meeting_room"),
+                            rs.getDate("date").toLocalDate(),
                             rs.getTime("startTime").toLocalTime(),
                             rs.getTime("endTime").toLocalTime(),
                             -1
@@ -140,8 +140,8 @@ public class BookingsDAOImpl implements BookingsDAO {
                     bookingsGroupedByMeetingRoomName.get(roomName).add(
                             new Booking(
                                     -1,
-                                    rs.getString("meetingRoom"),
-                                    rs.getDate("meetingDate").toLocalDate(),
+                                    rs.getString("booking_for_meeting_room"),
+                                    rs.getDate("date").toLocalDate(),
                                     rs.getTime("startTime").toLocalTime(),
                                     rs.getTime("endTime").toLocalTime(),
                                     -1

@@ -17,11 +17,11 @@ import java.util.logging.Logger;
 public class MeetingRoomDAOImpl implements MeetingRoomDAO {
     private static final String CREATE_NEW_MEETING_ROOM_ENTRY = "INSERT INTO MEETING_ROOMS (room_name, seating_capacity, ratings, hourly_cost, number_of_metings_held) VALUES (?,?,?,?,?)";
 
-    private static final String MODIFY_MEETING_ROOM = "UPDATE MEETING_ROOM " +
-            "SET seatingCapacity = ?, perHourCost = ?, ratings = ?, numberOfMeetingsHeld = ? " +
-            "WHERE meetingRoomName = ?";
+    private static final String MODIFY_MEETING_ROOM = "UPDATE MEETING_ROOMS " +
+            "SET seating_capacity = ?, hourly_cost = ?, ratings = ?, number_of_metings_held = ? " +
+            "WHERE room_name = ?";
 
-    private static final String FETCH_MEETING_ROOM_BY_ID = "SELECT * FROM MEETING_ROOM WHERE meetingRoomName = ?";
+    private static final String FETCH_MEETING_ROOM_BY_ID = "SELECT * FROM MEETING_ROOMS WHERE room_name = ?";
     private final Connection connection;
 
     public MeetingRoomDAOImpl() {
@@ -76,10 +76,10 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
             if (rs.next()) {
                 return new MeetingRoom(
                         rs.getString("meetingRoomName"),
-                        rs.getInt("seatingCapacity"),
+                        rs.getInt("seating_capacity"),
                         rs.getFloat("ratings"),
                         null,
-                        rs.getInt("perHourCost"));
+                        rs.getInt("hourly_cost"));
             } else
                 throw new MeetingRoomNotFoundException("The meeting room with the given name does not exist.");
         }
@@ -88,8 +88,8 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
     @Override
     public List<MeetingRoom> findByAmenities(List<Amenities> expectedAmenities) throws SQLException {
         final StringBuilder query =
-                new StringBuilder("select amenities.meeting_room_name, seatingCapacity, perHourCost, ratings, numberOfMeetingsHeld, amenities.amenities " +
-                        "from amenities inner join meeting_room on amenities.meeting_room_name = meeting_room.meetingRoomName " +
+                new StringBuilder("select amenities.meeting_room_name, seating_capacity, hourly_cost, ratings, number_of_metings_held, amenities.amenities " +
+                        "from amenities inner join meeting_rooms on amenities.meeting_room_name = meeting_rooms.room_name " +
                         "where amenities.amenities in (");
         for(int i=0;i<expectedAmenities.size();++i){
             query.append("?");
@@ -114,10 +114,10 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
                         id,
                         new MeetingRoom(
                                 id,
-                                rs.getInt("seatingCapacity"),
+                                rs.getInt("seating_capacity"),
                                 rs.getFloat("ratings"),
                                 amenities,
-                                rs.getInt("perHourCost")
+                                rs.getInt("hourly_cost")
                         )
                 );
             }

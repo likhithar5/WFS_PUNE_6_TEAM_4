@@ -11,6 +11,10 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import exceptions.UserAlreadyExistException;
+import exceptions.UserNotFoundException;
 import persistence.database.*;
 //import persistence.database.types.*;
 import beans.User;
@@ -28,11 +32,11 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	
-	private static final String SELECT_USER = "select * from user"; 
-	private static final String INSERT_USER = "insert into user (userId,name,email,phone,credits,role,date) values (?,?,?,?,?,?,?);";
-	private static final String SELECT_USER_BY_ID_EMAIL = "select * from user where userId=? and email=?;";
-	private static final String SELECT_USER_BY_ID =  "select credits from user where userId=?;";
-	private static final String UPDATE_CREDITS = "UPDATE user SET credits = ? WHERE userId = ?";
+	private static final String SELECT_USER = "select * from users";
+	private static final String INSERT_USER = "insert into users (id,name,email,phone,role,last_logged_in) values (?,?,?,?,?,?);";
+	private static final String SELECT_USER_BY_ID_EMAIL = "select * from users where id=? and email=?;";
+	private static final String SELECT_USER_BY_ID =  "select * from users where id=?;";
+	private static final String UPDATE_CREDITS = "UPDATE credits SET meeting_credits = ? WHERE id = ?";
 	
 
 	@Override
@@ -54,7 +58,8 @@ public class UserDaoImpl implements UserDao {
         		users.add(user);
         	}
         }catch(Exception e) {
-        	e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+			throw new RuntimeException(e);
         }
 		return users;
 	}
@@ -84,12 +89,12 @@ public class UserDaoImpl implements UserDao {
 
 				int resultSet = statement.executeUpdate();
 				if (resultSet == 0) {
-					//throw new UserAlreadyExistException("User already exist with id : "+u.getUserId());
-					System.out.println("UserAlreadyExistException");
+					throw new UserAlreadyExistException("User already exist");
 				}
 
-			} catch (Exception e) {
-			      e.printStackTrace();
+			} catch (UserAlreadyExistException | SQLException e) {
+				Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+				throw new RuntimeException(e);
 			}
 		return true;
 	}
@@ -116,12 +121,12 @@ public class UserDaoImpl implements UserDao {
 					//set date
 				}
 				else {
-					//throw new UserNotFoundException("User Not Found with id :"+user_id);
-					System.out.println("UserNotFoundException");
+					Logger.getLogger(this.getClass().getName()).severe("User Not Found >> user_id : " + user_id);
+					throw new UserNotFoundException("User Not Found");
 				}
-			   System.out.println(user);
 			}catch(Exception e) {
-			    e.printStackTrace();
+				Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+				throw new RuntimeException(e);
 			}
 			
       return user;
@@ -138,18 +143,18 @@ public class UserDaoImpl implements UserDao {
 			if(rs.next()) {
 				credits = rs.getInt(1);
 			}else {
-				//throw new UserNotFoundException("User Not Found with id :"+userId);
-				System.out.println("UserNotFoundException");
+				Logger.getLogger(this.getClass().getName()).severe("User Not Found with id :"+userId);
+				throw new UserNotFoundException("User Not Found");
 			}
 		}catch(Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
 		}
 		return credits;
 	}
 
 	@Override
 	public void setUserCredits(int userId, int credits)/* throws UserNotFoundException*/ {
-		PreparedStatement ps = null;
+		PreparedStatement ps;
 
 		try {
 			
@@ -161,16 +166,15 @@ public class UserDaoImpl implements UserDao {
 
 			if (!resultSet.next()) {
 				// The user does not exist, throw a custom exception
-				//throw new UserNotFoundException("User with ID " + userId + " not found");
-				System.out.println("UserNotFoundException");
+				throw new UserNotFoundException("User with ID " + userId + " not found");
 			}
 
 			ps = conn.prepareStatement(UPDATE_CREDITS);
 			ps.setInt(1, credits);
 			ps.setInt(2, userId);
 			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (UserNotFoundException | SQLException e) {
+			Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
 		}
 
 	}

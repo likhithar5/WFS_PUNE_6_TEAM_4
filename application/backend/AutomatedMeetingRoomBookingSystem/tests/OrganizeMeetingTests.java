@@ -2,10 +2,7 @@ import beans.MeetingRoom;
 import dto.OrganizeMeetingRequest;
 import enums.MeetingType;
 import exceptions.AvailableSlotsNotAvailableException;
-import service.BookingService;
-import service.BookingServiceImpl;
-import service.MeetingRoomService;
-import service.MeetingRoomServiceImpl;
+import service.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -47,5 +44,29 @@ public class OrganizeMeetingTests {
             System.out.println("Success in booking meeting");
         else
             System.out.println("Failed");
+    }
+
+    private static void givenMeetingRequirements_whenExecuted_ThenBookedMeeting(){
+        ManagerService managerService = new ManagerServiceImpl();
+        /// user input
+        MeetingType meetingType = MeetingType.CLASSROOM_TRAINING;
+        LocalDate meetingDate = LocalDate.of(2023,10,20);
+        LocalTime startTime = LocalTime.of(16,20,0);
+        int durationInMinutes = 60;
+        int seatsReq = 25;
+
+        List<String> metingRoomsAvailableForBooking = managerService.getAvailableRooms(
+                meetingType,
+                seatsReq,
+                meetingDate,
+                startTime,
+                durationInMinutes
+        );
+
+        System.out.println("choose a room to book: ");
+        metingRoomsAvailableForBooking.forEach(System.out::println);
+
+
+
     }
 }
