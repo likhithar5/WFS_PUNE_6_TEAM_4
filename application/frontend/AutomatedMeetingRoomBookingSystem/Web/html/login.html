@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Log in</title>
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-navbar">
+            <h3>SCAREDTOCOMPILE</h3>
+        </div>
+
+    </header>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form action="">
+                <h1>Hello!</h1>
+                <p>Welcome to Automated Meeting Booking System.</p>
+                <p>This web application helps users to create and edit meeting rooms based on the availability as per
+                    the requirement. Sign in to your account to explore the wide range of functionalities we offer.</p>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form action="display.html" method="GET" onsubmit="return validateForm()">
+                <h1>Log In</h1>
+                <br></br>
+                <input type="number" id="userID" name="UID" placeholder="8-digit User ID" required pattern="[0-9]{8}">
+                <span id="userIDError" style="color: red;"></span>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <span id="emailError" style="color: red;"></span>
+                <a href="#">Use another Email ID</a>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Already have an account?</h1>
+                    <p>Click on the sign-in button below to login and access your account.</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>About us</h1>
+                    <p>New to the app? </p>
+                    <p>We've got you covered. Click below on the tell me more icon to learn more about us. Click on the
+                        sign-in button to log in to your account.</p>
+                    <button class="ghost" id="signUp">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer section -->
+    <section class="container-fluid footer_section">
+        <p>
+            &copy; All Rights Reserved By
+            Scared To Compile
+        </p>
+    </section>
+    <!-- footer section -->
+
+    <script type="text/javascript">
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+        const userIDInput = document.getElementById('userID');
+        const userIDError = document.getElementById('userIDError');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        function redirectToPage(emailValue) {
+            const domain = emailValue.split('@')[1];
+            const timestamp = new Date().toLocaleString();
+            const encodedEmail = encodeURIComponent(emailValue);
+            const encodedTimestamp = encodeURIComponent(timestamp);
+
+            switch (domain) {
+                case 'member.com':
+                    window.location.href = `member.html?email=${encodedEmail}&timestamp=${encodedTimestamp}`;
+                    break;
+                case 'admin.com':
+                    window.location.href = `admin.html?email=${encodedEmail}&timestamp=${encodedTimestamp}`;
+                    break;
+                case 'manager.com':
+                    window.location.href = `manager.html?email=${encodedEmail}&timestamp=${encodedTimestamp}`;
+                    break;
+                default:
+                    // Handle other cases or display an error message
+                    alert("Invalid email domain");
+            }
+        }
+
+        function validateForm() {
+            const userIDValue = userIDInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const userIDRegex = /^\d{8}$/;
+            const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+            let isValid = true;
+
+            if (!userIDRegex.test(userIDValue)) {
+                userIDError.textContent = "Please enter a valid 8-digit User ID.";
+                isValid = false;
+            } else {
+                userIDError.textContent = "";
+            }
+
+            if (!emailRegex.test(emailValue)) {
+                emailError.textContent = "Please enter a valid email address.";
+                isValid = false;
+            } else {
+                emailError.textContent = "";
+            }
+
+            if (isValid) {
+                redirectToPage(emailValue);
+            }
+
+            return false;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create room</title>
+
+    <meta name="author" content="Codeconvey" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="../css/createroom.css">
+    <script src="../javascript/createroom.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="left-navbar">
+            <h3>SCAREDTOCOMPILE</h3>
+        </div>
+        <div class="right-navbar" id="right-nav">
+            <ul id="list-ul">
+
+                <li><a href="admin.html">Home</a></li>
+                <li><span>|</span></li>
+            </ul>
+    </header>
+
+    <div class="ScriptTop">
+        <div class="rt-container">
+            <div class="col-rt-4" id="float-right">
+            </div>
+
+        </div>
+    </div>
+
+    <section>
+        <div class="rt-container">
+            <div class="col-rt-12">
+                <div class="Scriptcontent">
+
+                    <div>
+                        <div class="container">
+                            <div class="contact-parent">
+                                <div class="contact-child child1">
+
+                                </div>
+
+                                <div class="contact-child child2">
+                                    <div class="inside-contact">
+                                        <h2>Create room</h2>
+                                        <h3>
+                                            <span id="confirm">
+                                        </h3>
+                                        <div class="form-group">
+                                            <label for="roomName">Room Name:</label>
+                                            <input type="text" class="form-control" id="roomName" name="roomName"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="seatingCapacity">Seating Capacity:</label>
+                                            <input type="number" class="form-control" id="seatingCapacity"
+                                                name="seatingCapacity" required>
+                                        </div>
+                                        <div class="form-group-checkbox">
+                                            <label>Amenities Available (Select at least 2):</label><br>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="projector"
+                                                    name="amenities" value="Projector">
+                                                <label class="form-check-label" for="projector">Projector</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="wifi"
+                                                    name="amenities" value="Wi-Fi">
+                                                <label class="form-check-label" for="wifi">Wi-Fi Connection</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="conferenceCall"
+                                                    name="amenities" value="Conference Call Facility">
+                                                <label class="form-check-label" for="conferenceCall">Conference Call
+                                                    Facility</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="whiteboard"
+                                                    name="amenities" value="Whiteboard">
+                                                <label class="form-check-label" for="whiteboard">Whiteboard</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="waterDispenser"
+                                                    name="amenities" value="Water Dispenser">
+                                                <label class="form-check-label" for="waterDispenser">Water
+                                                    Dispenser</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="tv" name="amenities"
+                                                    value="TV">
+                                                <label class="form-check-label" for="tv">TV</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="coffeeMachine"
+                                                    name="amenities" value="Coffee Machine">
+                                                <label class="form-check-label" for="coffeeMachine">Coffee
+                                                    Machine</label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <button type="submit" class="btn btn-primary " id="saveButton">Save</button>
+                                        <button type="button" class="btn btn-secondary" id="cancelButton"
+                                            onclick="cancelForm()">Cancel</button>
+                                        <br>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section class="container-fluid footer_section">
+        <p>
+            &copy; All Rights Reserved By
+            Scared To Compile
+        </p>
+    </section>
+
+</body>
+
+</html>
