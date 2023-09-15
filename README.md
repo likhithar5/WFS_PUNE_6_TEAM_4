@@ -14,3 +14,8 @@ The project identifies 3 types of users:
 ### Backend
 - Java 11
 - JDBC with MYSQL
+
+### How to run the application
+1. From the application folder, download or clone the project.
+2. To run the frontend, open the frontend/AutomatedMeetingRoomBookingSystem in the VS code.
+3. Open the index.html and run the file on the browser.
