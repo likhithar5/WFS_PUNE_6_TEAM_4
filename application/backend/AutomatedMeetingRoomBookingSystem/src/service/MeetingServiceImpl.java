@@ -1,18 +1,24 @@
 package service;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import Utility.DaoFactory;
 import beans.Meeting;
 import dao.MeetingDao;
+import dao.ParticipantDAOImpl;
+import dao.ParticipantsDAO;
 import exceptions.MeetingNotFoundException;
 
 public class MeetingServiceImpl implements MeetingService {
 	private MeetingDao meetingDao;
+	private ParticipantsDAO participantsDAO;
 
 	public MeetingServiceImpl() {
 		meetingDao = DaoFactory.getMeetingDaoInstance();
+		participantsDAO = new ParticipantDAOImpl();
 	}
 
 	@Override
@@ -36,8 +42,14 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public List<Meeting> fetchMeetingsByOrganizerId(int meetingId) {
-		return meetingDao.fetchMeetingsByOrganizerId(meetingId);
+	public List<Meeting> fetchMeetingsByOrganizerId(int meetingId) throws SQLException {
+		List<Meeting> meetings = meetingDao.fetchMeetingsByOrganizerId(meetingId);
+		for(Meeting meeting : meetings){
+			meeting.setParticipants(
+					participantsDAO.getByMeetingId(meeting.getMeetingId())
+			);
+		}
+		return meetings;
 	}
 
 	@Override
@@ -60,5 +72,4 @@ public class MeetingServiceImpl implements MeetingService {
 			return false;
 		}
 	}
-
 }

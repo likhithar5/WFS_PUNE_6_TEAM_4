@@ -11,7 +11,7 @@ import enums.MeetingType;
 public interface ManagerService {
 	int createMeeting(Meeting meeting) throws SQLException;
 	
-	List<Meeting> getOrganizedByManager(int managerId);
+	List<Meeting> getOrganizedByManager(int managerId) throws SQLException;
 	
 	void editMeeting(Meeting meeting);
 

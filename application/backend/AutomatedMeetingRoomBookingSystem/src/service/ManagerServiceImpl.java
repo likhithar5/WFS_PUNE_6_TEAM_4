@@ -40,7 +40,7 @@ public class ManagerServiceImpl implements ManagerService{
 	}
 
 	@Override
-	public List<Meeting> getOrganizedByManager(int managerId) {
+	public List<Meeting> getOrganizedByManager(int managerId) throws SQLException {
 		List<Meeting> schedules = meetingService.fetchMeetingsByOrganizerId(managerId);
 		return schedules;
 	}

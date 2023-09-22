@@ -32,4 +32,14 @@ public interface ParticipantsDAO {
      * @author Sayantan Das
      * */
     boolean delete(List<Participant> participantList) throws SQLException;
+
+    /**
+     * Fetches all the participants of a meeting identified by meeting id from the database.
+     *
+     * @param meetingId : The id of the meeting for which the participants are to be retrieved.
+     * @return List of Integer type.
+     * @throws SQLException : For any kind of SQL related Exception
+     * @author Sayantan Das
+     */
+    List<Integer> getByMeetingId(long meetingId) throws SQLException;
 }

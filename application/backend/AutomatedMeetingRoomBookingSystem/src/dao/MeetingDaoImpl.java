@@ -19,10 +19,10 @@ import persistence.database.Database;
 import persistence.database.DatabaseFactory;
 
 public class MeetingDaoImpl implements MeetingDao {
-	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select * from Meetings where organizerId = ?";
+	private static final String SELECT_MEETING_BY_ORGANIZERID = "Select * from Meetings where organized_by = ?";
 	private static final String SELECT_ALL_MEETINGS = "Select * from Meetings";
 
-	private static final String SELECT_MEETING_BY_ID = "Select * From Meetings where meetingId = ?";
+	private static final String SELECT_MEETING_BY_ID = "Select * From Meetings where id = ?";
 	private static final String UPDATE_MEETING = "UPDATE Meetings SET  title=?, meeting_date=?, start_time=?, end_time=?,  meeting_type=?, description=? WHERE id=?";
 	private static final String DELETE_MEETING_BY_ID = "DELETE FROM Meetings WHERE id=?";
 	private final Connection conn;
@@ -146,22 +146,22 @@ public class MeetingDaoImpl implements MeetingDao {
 
 	private Meeting mapToMeeting(ResultSet rs) throws SQLException {
 		Meeting meeting = new Meeting();
-		meeting.setMeetingId(rs.getInt(1));
-		meeting.setMeetingTitle(rs.getString(2));
-		meeting.setOrganizerId(rs.getInt(3));
-		meeting.setMeetingDate(rs.getObject(4, LocalDate.class));
-		meeting.setStartTime(rs.getTime(5).toLocalTime());
-		meeting.setEndTime(rs.getTime(6).toLocalTime());
-		meeting.setMeetingType(MeetingType.valueOf(rs.getString(7)));
-		meeting.setMeetingRoom(rs.getString(8));
+		meeting.setMeetingId(rs.getInt("id"));
+		meeting.setMeetingTitle(rs.getString("title"));
+		meeting.setOrganizerId(rs.getInt("organized_by"));
+		meeting.setMeetingDate(rs.getObject("meeting_date", LocalDate.class));
+		meeting.setStartTime(rs.getTime("start_time").toLocalTime());
+		meeting.setEndTime(rs.getTime("end_time").toLocalTime());
+		meeting.setMeetingType(MeetingType.valueOf(rs.getString("meeting_type")));
+		meeting.setMeetingRoom(rs.getString("assigned_to_meeting_room"));
 
 		// Convert the comma-separated sFtring to a list of integers
-		String participantsString = rs.getString(9);
+		/*String participantsString = rs.getString(9);
 		List<Integer> participants = Arrays.stream(participantsString.split(",")).map(Integer::parseInt)
 				.collect(Collectors.toList());
-		meeting.setParticipants(participants);
+		meeting.setParticipants(participants);*/
 
-		meeting.setMeetingDescription(rs.getString(10));
+		meeting.setMeetingDescription(rs.getString("description"));
 
 		return meeting;
 	}

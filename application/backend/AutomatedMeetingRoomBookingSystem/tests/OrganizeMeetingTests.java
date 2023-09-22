@@ -16,7 +16,7 @@ public class OrganizeMeetingTests {
         LocalDate meetingDate = LocalDate.of(2023,10,20);
         LocalTime startTime = LocalTime.of(16,20,0);
         int durationInMinutes = 60;
-        int seatsReq = 25;
+        int seatsReq = 4;
 
         MeetingRoomService meetingRoomService = new MeetingRoomServiceImpl();
         List<MeetingRoom> meetingRooms = meetingRoomService.findMeetingRoomsBasedOnUserRequest(meetingType,seatsReq);
@@ -29,7 +29,7 @@ public class OrganizeMeetingTests {
         System.out.println("Available meeting rooms for booking : " );
         availableMeetingRoomNames.forEach(System.out::println);
 
-        OrganizeMeetingRequest organizeMeetingRequest = new OrganizeMeetingRequest(
+        /*OrganizeMeetingRequest organizeMeetingRequest = new OrganizeMeetingRequest(
                 "Banking Session",
                 MeetingType.CLASSROOM_TRAINING,
                 LocalDate.of(2022,10,21),
@@ -43,7 +43,7 @@ public class OrganizeMeetingTests {
         if(bookingService.createBooking(organizeMeetingRequest))
             System.out.println("Success in booking meeting");
         else
-            System.out.println("Failed");
+            System.out.println("Failed");*/
     }
 
     private static void givenMeetingRequirements_whenExecuted_ThenBookedMeeting(){

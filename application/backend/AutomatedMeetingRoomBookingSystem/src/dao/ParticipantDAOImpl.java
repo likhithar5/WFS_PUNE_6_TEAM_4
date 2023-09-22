@@ -2,13 +2,14 @@ package dao;
 
 import beans.Participant;
 import enums.DatabaseProduct;
-import dao.ParticipantsDAO;
 import persistence.database.Database;
 import persistence.database.DatabaseFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
@@ -19,6 +20,9 @@ public class ParticipantDAOImpl implements ParticipantsDAO {
 
     private static final String DELETE_PARTICIPANT =
             "DELETE FROM PARTICIPANTS WHERE userId = ? AND meetingId = ?";
+
+    private  static final String GET_PARTICIPANTS_BY_MEETING_ID
+            = "SELECT user_id FROM PARTICIPANTS WHERE meeting_id = ?";
 
     private final Connection connection;
 
@@ -68,5 +72,17 @@ public class ParticipantDAOImpl implements ParticipantsDAO {
             }));
         }
         return rowsAffected.get() == participantList.size();
+    }
+
+    @Override
+    public List<Integer> getByMeetingId(long meetingId) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(GET_PARTICIPANTS_BY_MEETING_ID)){
+            List<Integer> participantList = new ArrayList<>();
+            preparedStatement.setLong(1, meetingId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next())
+                participantList.add(rs.getInt("user_id"));
+            return participantList;
+        }
     }
 }

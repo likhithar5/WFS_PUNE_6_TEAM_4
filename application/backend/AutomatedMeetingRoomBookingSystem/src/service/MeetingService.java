@@ -13,7 +13,7 @@ public interface MeetingService {
 
 	public Meeting fetchMeetingById(int meetingId);
 
-	List<Meeting> fetchMeetingsByOrganizerId(int organizerId);
+	List<Meeting> fetchMeetingsByOrganizerId(int organizerId) throws SQLException;
 
 	public boolean deleteMeetingById(int meetingId);
 
