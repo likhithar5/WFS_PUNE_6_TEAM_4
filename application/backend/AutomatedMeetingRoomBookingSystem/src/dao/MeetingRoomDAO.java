@@ -64,4 +64,12 @@ public interface MeetingRoomDAO {
      * @author Sayantan Das
      * */
     List<MeetingRoom> findByAmenities(List<Amenities> expectedAmenities) throws SQLException;
+
+    /**
+     * Fetches all meeting rooms.
+     * @return List of MeetingRoom
+     * @throws SQLException For any kind of Sql related exceptions.
+     * @author Sayantan Das
+     * */
+    List<MeetingRoom> getAllMeetingRooms() throws SQLException;
 }

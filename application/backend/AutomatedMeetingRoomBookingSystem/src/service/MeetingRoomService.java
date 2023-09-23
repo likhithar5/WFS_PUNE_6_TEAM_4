@@ -2,6 +2,7 @@ package service;
 
 import beans.MeetingRoom;
 import enums.MeetingType;
+import exceptions.MeetingRoomNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,4 +26,10 @@ public interface MeetingRoomService {
      * @author Sayantan Das
      * */
     boolean addNewMeetingRoom(MeetingRoom meetingRoom) throws SQLException;
+
+    int getMeetingRoomCost(String meetingRoomName, int bookingDurationInMinutes) throws SQLException, MeetingRoomNotFoundException;
+
+    List<MeetingRoom> fetchAllMeetingRooms() throws SQLException;
+
+    MeetingRoom getMeetingRoomByName(String roomNameToUpdate) throws SQLException, MeetingRoomNotFoundException;
 }

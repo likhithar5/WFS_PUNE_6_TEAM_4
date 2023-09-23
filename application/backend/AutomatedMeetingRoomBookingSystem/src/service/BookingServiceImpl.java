@@ -36,12 +36,11 @@ public class BookingServiceImpl implements BookingService{
             LocalTime startTime,
             int durationInMinutes) throws SQLException {
         /// find the bookings that have been made for the shortlisted rooms sorted in asc by date then st_time then end_time
+        List<String> meetingRoomsList = meetingRooms.stream()
+                .map(MeetingRoom::getMeetingRoomName)
+                .collect(Collectors.toList());
         Map<String, List<Booking>> bookingsGroupedByRoomName =
-                bookingsDAO.getBookingsByMeetingRoomName(
-                        meetingRooms.stream()
-                                .map(MeetingRoom::getMeetingRoomName)
-                                .collect(Collectors.toList())
-                );
+                bookingsDAO.getBookingsByMeetingRoomName(meetingRoomsList);
 
         /// find an available slot(s)
         List<String> roomsAvailableForBooking = new ArrayList<>();
@@ -92,6 +91,10 @@ public class BookingServiceImpl implements BookingService{
             else // when there are no bookings on that required date, then we can safely add it our list of answer.
                 roomsAvailableForBooking.add(roomName);
         }//end outermost for
+
+        meetingRoomsList.removeAll(roomsAvailableForBooking);
+        roomsAvailableForBooking.addAll(meetingRoomsList);
+
         return roomsAvailableForBooking;
     }
 

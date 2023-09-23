@@ -22,6 +22,7 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
             "WHERE room_name = ?";
 
     private static final String FETCH_MEETING_ROOM_BY_ID = "SELECT * FROM MEETING_ROOMS WHERE room_name = ?";
+    private static final String FETCH_MEETING_ROOMS = "SELECT * FROM MEETING_ROOMS";
     private final Connection connection;
 
     public MeetingRoomDAOImpl() {
@@ -74,12 +75,14 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
             preparedStatement.setString(1, meetingRoomName);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return new MeetingRoom(
-                        rs.getString("meetingRoomName"),
+                MeetingRoom room =  new MeetingRoom(
+                        rs.getString("room_name"),
                         rs.getInt("seating_capacity"),
                         rs.getFloat("ratings"),
                         null,
                         rs.getInt("hourly_cost"));
+                room.setNumOfMeetingsHeld(rs.getLong("number_of_metings_held"));
+                return room;
             } else
                 throw new MeetingRoomNotFoundException("The meeting room with the given name does not exist.");
         }
@@ -123,5 +126,25 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
             }
         }// end of while
         return new ArrayList<>(meetingRoomMap.values());
+    }
+
+    //room_name, seating_capacity, ratings, hourly_cost, number_of_metings_held
+    @Override
+    public List<MeetingRoom> getAllMeetingRooms() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FETCH_MEETING_ROOMS)) {
+            List<MeetingRoom> meetingRooms = new ArrayList<>();
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                MeetingRoom room =  new MeetingRoom(
+                        rs.getString("room_name"),
+                        rs.getInt("seating_capacity"),
+                        rs.getFloat("ratings"),
+                        null,
+                        rs.getInt("hourly_cost"));
+                room.setNumOfMeetingsHeld(rs.getLong("number_of_metings_held"));
+                meetingRooms.add(room);
+            }
+            return meetingRooms;
+        }
     }
 }

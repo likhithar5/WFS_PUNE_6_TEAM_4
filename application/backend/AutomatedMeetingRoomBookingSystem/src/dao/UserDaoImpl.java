@@ -36,7 +36,10 @@ public class UserDaoImpl implements UserDao {
 	private static final String INSERT_USER = "insert into users (id,name,email,phone,role,last_logged_in) values (?,?,?,?,?,?);";
 	private static final String SELECT_USER_BY_ID_EMAIL = "select * from users where id=? and email=?;";
 	private static final String SELECT_USER_BY_ID =  "select * from users where id=?;";
-	private static final String UPDATE_CREDITS = "UPDATE credits SET meeting_credits = ? WHERE id = ?";
+	private static final String UPDATE_CREDITS = "UPDATE credits SET meeting_credits = ? WHERE user_id = ?";
+	private static final String GET_CREDITS = "SELECT meeting_credits FROM credits WHERE user_id = ?";
+
+	private static final String GET_USER_ROLE = "select role from users where id=?;";
 	
 
 	@Override
@@ -62,6 +65,20 @@ public class UserDaoImpl implements UserDao {
 			throw new RuntimeException(e);
         }
 		return users;
+	}
+
+	@Override
+	public String getUserRole(int userId) throws UserNotFoundException {
+		try(PreparedStatement preparedStatement = conn.prepareStatement(GET_USER_ROLE)){
+			preparedStatement.setInt(1,userId);
+			ResultSet rs = preparedStatement.executeQuery();
+			if(rs.next())
+				return rs.getString("role");
+			else throw new UserNotFoundException("User does not exist.");
+		} catch (SQLException e) {
+			Logger.getLogger(this.getClass().getName()).severe(e.toString());
+            throw new RuntimeException(e);
+        }
 	}
 
 	@Override
@@ -112,12 +129,10 @@ public class UserDaoImpl implements UserDao {
 				if(rs != null) {
 					rs.next();
 					user = new User();
-					user.setUserId(rs.getInt(1));
-					user.setName(rs.getString(2));
-					user.setEmail(rs.getString(3));
-					user.setPhone(rs.getString(4));
-					user.setCredits(rs.getInt(5));
-					user.setRole(Role.valueOf(rs.getString(6)));
+					user.setUserId(rs.getInt("id"));
+					user.setName(rs.getString("name"));
+					user.setEmail(rs.getString("email"));
+					user.setRole(Role.valueOf(rs.getString("role")));
 					//set date
 				}
 				else {
@@ -135,15 +150,15 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public int getUserCredits(int userId) {
 		int credits = 0;
-		PreparedStatement ps = null;
+		PreparedStatement ps;
 		try {
-			 ps = conn.prepareStatement(SELECT_USER_BY_ID);
+			ps = conn.prepareStatement(GET_CREDITS);
 			ps.setInt(1, userId);
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()) {
 				credits = rs.getInt(1);
 			}else {
-				Logger.getLogger(this.getClass().getName()).severe("User Not Found with id :"+userId);
+				Logger.getLogger(this.getClass().getName()).severe("User Not Found ");
 				throw new UserNotFoundException("User Not Found");
 			}
 		}catch(Exception e) {
@@ -157,8 +172,6 @@ public class UserDaoImpl implements UserDao {
 		PreparedStatement ps;
 
 		try {
-			
-
 			// Check if the user exists before updating credits
 			PreparedStatement checkUserPs = conn.prepareStatement(SELECT_USER_BY_ID);
 			checkUserPs.setInt(1, userId);

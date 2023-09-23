@@ -5,6 +5,7 @@ import dao.MeetingRoomDAO;
 import dao.MeetingRoomDAOImpl;
 import enums.Amenities;
 import enums.MeetingType;
+import exceptions.MeetingRoomNotFoundException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -41,6 +42,12 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
         return meetingRoomDAO.create(meetingRoom);
     }
 
+    @Override
+    public int getMeetingRoomCost(String meetingRoomName, int bookingDurationInMinutes) throws SQLException, MeetingRoomNotFoundException {
+        int perHourCost = meetingRoomDAO.getMeetingRoomById(meetingRoomName).getPerHourCost();
+        return perHourCost * (int)(Math.ceil((double) bookingDurationInMinutes /60));
+    }
+
     /**
      * Filter out meeting rooms based on the seating capacity from a list of meeting rooms.
      * @param meetingRoomList The list of meeting rooms from where to filter.
@@ -65,7 +72,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
      * @author Sayantan Das
      * */
     private static List<MeetingRoom> filterMeetingRoomsHavingAllTheRequestedAmenities(
-            List<Amenities> amenitiesRequested, List<MeetingRoom> meetingRoomList){
+        List<Amenities> amenitiesRequested, List<MeetingRoom> meetingRoomList){
         meetingRoomList = meetingRoomList.stream()
                 .filter(meetingRoom -> {
                     Set<Amenities> amenitiesSet = meetingRoom.getAmenities();
@@ -77,5 +84,15 @@ public class MeetingRoomServiceImpl implements MeetingRoomService{
                 })
                 .collect(Collectors.toList());
         return meetingRoomList;
+    }
+
+    @Override
+    public List<MeetingRoom> fetchAllMeetingRooms() throws SQLException {
+        return meetingRoomDAO.getAllMeetingRooms();
+    }
+
+    @Override
+    public MeetingRoom getMeetingRoomByName(String roomNameToUpdate) throws SQLException, MeetingRoomNotFoundException {
+        return meetingRoomDAO.getMeetingRoomById(roomNameToUpdate);
     }
 }

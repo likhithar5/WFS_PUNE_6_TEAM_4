@@ -1,16 +1,14 @@
 package service;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Logger;
-
 import Utility.DaoFactory;
 import beans.Meeting;
 import dao.MeetingDao;
 import dao.ParticipantDAOImpl;
 import dao.ParticipantsDAO;
 import exceptions.MeetingNotFoundException;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class MeetingServiceImpl implements MeetingService {
 	private MeetingDao meetingDao;

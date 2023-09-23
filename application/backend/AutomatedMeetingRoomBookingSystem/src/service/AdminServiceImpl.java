@@ -9,6 +9,8 @@ import enums.Amenities;
 import exceptions.MeetingRoomNotFoundException;
 
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -51,6 +53,9 @@ public class AdminServiceImpl implements AdminService{
 
 	public boolean editMeetingRoom(String meetingRoomNameToUpdate, MeetingRoom updatedMeetingRoom) {
 		try {
+			for(Amenities amenity : updatedMeetingRoom.getAmenities())
+				if(amenitiesDAO.addAmenity(meetingRoomNameToUpdate,amenity) == false)
+					return false;
 			return meetingRoomDao.modify(meetingRoomNameToUpdate, updatedMeetingRoom);
 		} catch (MeetingRoomNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -58,6 +63,28 @@ public class AdminServiceImpl implements AdminService{
 		return false;
 	}
 
+	@Override
+	public List<MeetingRoom> fetchAllMeetingRooms() throws SQLException {
+        List<MeetingRoom> meetingRoomList = meetingRoomDao.getAllMeetingRooms();
+        meetingRoomList.forEach(meetingRoom -> {
+            try {
+                Set<Amenities> amenitiesSet = amenitiesDAO.getAmenitiesByMeetingRoomName(meetingRoom.getMeetingRoomName());
+                meetingRoom.setAmenities(amenitiesSet);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).severe(e.toString());
+                throw new RuntimeException(e);
+            }
+        });
 
+        return meetingRoomList;
+	}
+
+	@Override
+	public MeetingRoom fetchMeetingRoomByName(String meetingRoomName) throws SQLException, MeetingRoomNotFoundException {
+		MeetingRoom meetingRoom = meetingRoomService.getMeetingRoomByName(meetingRoomName);
+		Set<Amenities> amenitiesSet = amenitiesDAO.getAmenitiesByMeetingRoomName(meetingRoomName);
+		meetingRoom.setAmenities(amenitiesSet);
+		return meetingRoom;
+	}
 }
 

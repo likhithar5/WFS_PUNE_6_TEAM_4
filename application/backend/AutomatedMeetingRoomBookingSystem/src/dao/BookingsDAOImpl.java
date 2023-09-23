@@ -114,7 +114,7 @@ public class BookingsDAOImpl implements BookingsDAO {
                 query.append(',');
         }
         query.append(") order by B.booking_for_meeting_room, B.date, B.startTime, B.endTime;");
-        System.out.println("query : " + query);
+        /*System.out.println("query : " + query);*/
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(query.toString())){
             for(int i=0;i<numOfParameters;++i){
