@@ -5,10 +5,9 @@ import enums.MeetingType;
 import enums.Role;
 import exceptions.UserNotFoundException;
 import presentation.ui.AdminUI;
+import presentation.ui.LoginUI;
 import presentation.ui.ManagerUI;
 import presentation.ui.MemberUI;
-import service.LoginService;
-import service.LoginServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,10 +16,9 @@ import java.util.logging.Logger;
 
 public class Main {
     private static final BufferedReader bufferedReader;
-    private static final LoginService loginService;
+
     static{
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        loginService = new LoginServiceImpl();
     }
     public static void main(String[] args) {
         Role roleSelected = null;
@@ -29,7 +27,7 @@ public class Main {
             /// takes user input to select the mode of operation for the application
             do {
                 try {
-                    user = performLoginAndGetUser();
+                    user = LoginUI.performLoginAndGetUser();
                     if(user==null)
                         throw new UserNotFoundException("User Id or Email is Wrong....");
                     roleSelected = user.getRole();
@@ -42,7 +40,6 @@ public class Main {
             System.out.println(e.getMessage());
             Logger.getLogger(Main.class.getName()).severe(e.toString());
         }
-  
 
         System.out.println("--------------------------------------");
         assert user != null;
@@ -70,20 +67,6 @@ public class Main {
             Logger.getLogger(Main.class.getName()).severe(e.toString());
         }
         
-    }
-
-
-    private static User performLoginAndGetUser() throws IOException {
-        System.out.println("Login");
-        System.out.println("--------------------------------------");
-        System.out.print("User ID : ");
-        int userId = Integer.parseInt(bufferedReader.readLine());
-
-        System.out.print("User Email : ");
-        String userEmail = bufferedReader.readLine();
-
-        /// if user credentials are okay then a non-null user object will be returned.
-        return loginService.login(userId,userEmail);
     }
 
     private static void showOptions(Role role){
