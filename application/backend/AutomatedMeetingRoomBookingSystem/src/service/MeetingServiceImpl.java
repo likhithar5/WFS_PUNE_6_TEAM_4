@@ -30,12 +30,11 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public Meeting fetchMeetingById(int meetingId) {
+	public Meeting fetchMeetingById(int meetingId) throws MeetingNotFoundException {
 		try {
 			return meetingDao.fetchMeetingById(meetingId);
 		} catch (MeetingNotFoundException e) {
-			System.out.println(e.getMessage());
-			return null;
+			throw e;
 		}
 	}
 

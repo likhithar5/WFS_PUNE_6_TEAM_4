@@ -24,6 +24,9 @@ public class ParticipantDAOImpl implements ParticipantsDAO {
     private  static final String GET_PARTICIPANTS_BY_MEETING_ID
             = "SELECT user_id FROM PARTICIPANTS WHERE meeting_id = ?";
 
+    private  static final String GET_MEETING_IDs_FOR_PARTICIPANT
+            = "SELECT meeting_id FROM PARTICIPANTS WHERE user_id = ?";
+
     private final Connection connection;
 
     public ParticipantDAOImpl() {
@@ -83,6 +86,18 @@ public class ParticipantDAOImpl implements ParticipantsDAO {
             while(rs.next())
                 participantList.add(rs.getInt("user_id"));
             return participantList;
+        }
+    }
+
+    @Override
+    public List<Integer> getMeetingIdsFor(int userId) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(GET_MEETING_IDs_FOR_PARTICIPANT)){
+            preparedStatement.setInt(1,userId);
+            ResultSet rs = preparedStatement.executeQuery();
+            List<Integer> meetingIds = new ArrayList<>();
+            while(rs.next())
+                meetingIds.add(rs.getInt("meeting_id"));
+            return meetingIds;
         }
     }
 }

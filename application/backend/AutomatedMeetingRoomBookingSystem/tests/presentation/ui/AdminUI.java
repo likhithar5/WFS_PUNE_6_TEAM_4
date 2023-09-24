@@ -35,6 +35,7 @@ public class AdminUI {
 
     public static void handleAdminPerspective() throws IOException {
         Set<Amenities> amenitiesSet;
+        int perHourCharge;
         System.out.println("Enter choice :");
         int choice = Integer.parseInt(bufferedReader.readLine());
         switch (choice){
@@ -50,7 +51,7 @@ public class AdminUI {
                 int seatingCap = Integer.parseInt(bufferedReader.readLine());
 
                 amenitiesSet = selectAmenitiesMenuHandler();
-                int perHourCharge = calculatePerHourCharges(amenitiesSet);
+                perHourCharge = calculatePerHourCharges(amenitiesSet);
                 if(adminService.createMeetingRoom(
                         new MeetingRoom(roomName, seatingCap, 0, amenitiesSet, perHourCharge)
                 ))
@@ -82,10 +83,14 @@ public class AdminUI {
                             meetingRoomPrev.getSeatingCapacity() :
                             Float.parseFloat(newRatingsStr);
 
-                    System.out.println("Want to change amenities ? [Y/N]");
+                    perHourCharge = meetingRoomPrev.getPerHourCost();
+                    System.out.println("Want to add amenities ? [Y/N]");
                     char ch = bufferedReader.readLine().charAt(0);
                     if(ch=='Y')
+                    {
                         amenitiesSet = selectAmenitiesMenuHandler();
+                        perHourCharge = calculatePerHourCharges(amenitiesSet);
+                    }
                     else
                         amenitiesSet = meetingRoomPrev.getAmenities();
 
@@ -94,7 +99,7 @@ public class AdminUI {
                             newSeatingCap,
                             newRatings,
                             amenitiesSet,
-                            meetingRoomPrev.getPerHourCost()
+                            perHourCharge
                     );
 
                     if(adminService.editMeetingRoom(roomNameToEdit,updatedMeetingRoom))

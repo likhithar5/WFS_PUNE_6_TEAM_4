@@ -1,82 +1,75 @@
 package presentation;
 
 import beans.User;
-import dao.UserDao;
-import dao.UserDaoImpl;
 import enums.MeetingType;
 import enums.Role;
 import exceptions.UserNotFoundException;
 import presentation.ui.AdminUI;
 import presentation.ui.ManagerUI;
-import service.*;
+import presentation.ui.MemberUI;
+import service.LoginService;
+import service.LoginServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class Main {
     private static final BufferedReader bufferedReader;
-    private static final MeetingRoomService meetingRoomService;
-    private static final BookingService bookingService;
-    private static final MeetingService meetingService;
     private static final LoginService loginService;
-    private static final UserDao userDao;
     static{
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        meetingRoomService = new MeetingRoomServiceImpl();
-        bookingService = new BookingServiceImpl();
-        meetingService = new MeetingServiceImpl();
         loginService = new LoginServiceImpl();
-        userDao = new UserDaoImpl();
     }
     public static void main(String[] args) {
-        while(true)
-        {
-            try{
-                /// takes user input to select the mode of operation for the application
-                Role roleSelected;
-                User user = null;
-                do {
-                    try {
-                        user = performLoginAndGetUser();
-                        if(user==null)
-                            throw new UserNotFoundException("User Id or Email is Wrong....");
-                        roleSelected = user.getRole();
-                    } catch (UserNotFoundException e) {
-                        Logger.getLogger(Main.class.getName()).info(e.getMessage());
-                        roleSelected = null;
-                    }
-                }while(roleSelected == null);
-                System.out.println("--------------------------------------");
-                welcomeMessage(user);
-
-                /// Using the role to load the app in that perspective
-                while(true) {
-                    showOptions(roleSelected);
-                    switch (roleSelected){
-                        case ADMIN:
-                            AdminUI.handleAdminPerspective();
-                            break;
-                        case MANAGER:
-                            ManagerUI.handleManagerPerspective(user);
-                            break;
-                        case MEMBER:
-                            handleMemberPerspective();
-                            break;
-                    }
+        Role roleSelected = null;
+        User user = null;
+        try{
+            /// takes user input to select the mode of operation for the application
+            do {
+                try {
+                    user = performLoginAndGetUser();
+                    if(user==null)
+                        throw new UserNotFoundException("User Id or Email is Wrong....");
+                    roleSelected = user.getRole();
+                } catch (UserNotFoundException e) {
+                    Logger.getLogger(Main.class.getName()).info(e.getMessage());
                 }
+            }while(roleSelected==null && user==null);
 
-            } catch (IOException | SQLException e) {
-                System.out.println(e.getMessage());
-                Logger.getLogger(Main.class.getName()).severe(e.toString());
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-                Logger.getLogger(Main.class.getName()).severe(e.toString());
-                System.exit(1);
-            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            Logger.getLogger(Main.class.getName()).severe(e.toString());
         }
+  
+
+        System.out.println("--------------------------------------");
+        assert user != null;
+        welcomeMessage(user);
+
+        try{
+            /// Using the role to load the app in that perspective
+            while(true) {
+                assert roleSelected != null;
+                showOptions(roleSelected);
+                switch (roleSelected){
+                    case ADMIN:
+                        AdminUI.handleAdminPerspective();
+                        break;
+                    case MANAGER:
+                        ManagerUI.handleManagerPerspective(user);
+                        break;
+                    case MEMBER:
+                        MemberUI.handleMemberPerspective(user);
+                        break;
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            Logger.getLogger(Main.class.getName()).severe(e.toString());
+        }
+        
     }
 
 
@@ -104,35 +97,14 @@ public class Main {
                 ManagerUI.showManagerMenu();
                 return;
             case MEMBER:
-                showMemberMenu();
+                MemberUI.showMemberMenu();
                 return;
             default:
                 System.out.println("Invalid Role....Please choose again.");
         }
     }
 
-    /// options for the members
-    private static void showMemberMenu() {
-        System.out.println("1. View Scheduled Meetings.");
-        System.out.println("2. Get Meeting Info.");
-        System.out.println("3. Exit.");
-    }
-    private static void handleMemberPerspective() throws IOException {
-        System.out.println("Enter choice :");
-        int choice = Integer.parseInt(bufferedReader.readLine());
-        switch (choice){
-            case 1: // view scheduled meetings
-                System.out.println("View Scheduled Meetings");
-                break;
-            case 2: // get meeting info
-                System.out.println("Get Meeting Info");
-                break;
-            case 3:// exit from app
-                exitApp();
-            default:
-                System.out.println("Invalid option...Please choose again.");
-        }
-    }
+
 
     /// options for meeting types
     public static void showMeetingTypeOptions(){

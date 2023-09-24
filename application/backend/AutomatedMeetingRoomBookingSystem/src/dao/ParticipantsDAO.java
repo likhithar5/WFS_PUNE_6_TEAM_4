@@ -42,4 +42,6 @@ public interface ParticipantsDAO {
      * @author Sayantan Das
      */
     List<Integer> getByMeetingId(long meetingId) throws SQLException;
+
+    List<Integer> getMeetingIdsFor(int userId) throws SQLException;
 }

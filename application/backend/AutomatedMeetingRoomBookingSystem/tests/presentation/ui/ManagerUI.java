@@ -5,6 +5,7 @@ import beans.MeetingRoom;
 import beans.User;
 import dto.OrganizeMeetingRequest;
 import enums.MeetingType;
+import exceptions.MeetingNotFoundException;
 import exceptions.MeetingRoomNotFoundException;
 import service.*;
 
@@ -150,7 +151,7 @@ public class ManagerUI {
                             meeting.getMeetingDescription(),
                             meeting.getMeetingRoom()
                     );
-                }catch (MeetingRoomNotFoundException e){
+                }catch (MeetingNotFoundException e){
                     System.out.println(e.getMessage());
                 }
 
