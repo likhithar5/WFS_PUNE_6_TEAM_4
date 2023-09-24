@@ -32,7 +32,7 @@ public class ParticipantDAOImpl implements ParticipantsDAO {
     public ParticipantDAOImpl() {
         Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
         try{
-            database.createDatabase();
+            database.createConnection();
             this.connection = database.getConnection();
         }catch (Exception e){
             Logger.getLogger(ParticipantDAOImpl.class.getName())

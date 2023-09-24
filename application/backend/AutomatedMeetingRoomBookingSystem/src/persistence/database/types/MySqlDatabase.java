@@ -41,7 +41,7 @@ public class MySqlDatabase implements Database {
     }
 
     @Override
-    public void createDatabase() {
+    public void createConnection() {
         try{
             if(connection==null) {
                 synchronized (this) {

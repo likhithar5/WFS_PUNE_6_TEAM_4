@@ -29,7 +29,7 @@ public class MeetingRoomDAOImpl implements MeetingRoomDAO {
         Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
         try {
             if (database != null)
-                database.createDatabase();
+                database.createConnection();
             else
                 throw new RuntimeException("Database is Null");
             this.connection = database.getConnection();

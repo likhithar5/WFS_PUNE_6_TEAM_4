@@ -19,7 +19,7 @@ public class AmenitiesDAOImpl implements AmenitiesDAO{
     public AmenitiesDAOImpl() throws Exception {
         Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
         if(database!=null){
-            database.createDatabase();
+            database.createConnection();
             connection = database.getConnection();
         }else {
             Logger.getLogger(this.getClass().getName()).severe("Error occurred in creating database. Database is NULL.");

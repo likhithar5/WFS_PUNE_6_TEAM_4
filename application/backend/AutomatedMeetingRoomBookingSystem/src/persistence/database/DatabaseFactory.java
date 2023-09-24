@@ -22,7 +22,7 @@ public interface DatabaseFactory {
             switch(databaseProduct){
                 case MY_SQL:
                     Database mysqlDatabase = MySqlDatabase.getInstance();
-                    mysqlDatabase.createDatabase();
+                    mysqlDatabase.createConnection();
                     return mysqlDatabase;
                 case POSTGRES_SQL:
                 case DERBY:

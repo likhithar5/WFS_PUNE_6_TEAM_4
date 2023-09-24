@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import beans.Meeting;
 import enums.DatabaseProduct;
@@ -32,7 +30,7 @@ public class MeetingDaoImpl implements MeetingDao {
 		Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
 		if (database==null)
 			throw new RuntimeException("Error occurred in database. Database is null.");
-		database.createDatabase();
+		database.createConnection();
 		conn = database.getConnection();
 	}
 

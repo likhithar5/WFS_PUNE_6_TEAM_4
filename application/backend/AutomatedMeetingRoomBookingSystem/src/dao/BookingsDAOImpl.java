@@ -36,7 +36,7 @@ public class BookingsDAOImpl implements BookingsDAO {
             Database database = DatabaseFactory.getDatabaseOf(DatabaseProduct.MY_SQL);
             if(database==null)
                 throw new RuntimeException("Database is null");
-            database.createDatabase();
+            database.createConnection();
             connection = database.getConnection();
         } catch (Exception e) {
             Logger.getLogger(BookingsDAOImpl.class.getName())
