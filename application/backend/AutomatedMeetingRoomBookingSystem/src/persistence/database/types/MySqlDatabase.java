@@ -17,7 +17,7 @@ public class MySqlDatabase implements Database {
 
     private static volatile MySqlDatabase mySqlDatabase;
 
-    private static Connection connection;
+    private static volatile Connection connection;
 
     public static MySqlDatabase getInstance(){
         if(mySqlDatabase==null){
@@ -41,23 +41,28 @@ public class MySqlDatabase implements Database {
     }
 
     @Override
-    public synchronized void createDatabase() {
+    public void createDatabase() {
         try{
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-            String databaseURL = String.format(
-                    "jdbc:mysql://%s:%s/%s?useSSL=%s&autoReconnect=%s",
-                    host,
-                    port,
-                    database,
-                    useSSL,
-                    autoReconnect
-            );
-            connection = DriverManager.getConnection(
-                        databaseURL,
-                        username,
-                        password
-                );
+            if(connection==null) {
+                synchronized (this) {
+                    if(connection==null) {
+                        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+                        String databaseURL = String.format(
+                                "jdbc:mysql://%s:%s/%s?useSSL=%s&autoReconnect=%s",
+                                host,
+                                port,
+                                database,
+                                useSSL,
+                                autoReconnect
+                        );
+                        connection = DriverManager.getConnection(
+                                databaseURL,
+                                username,
+                                password
+                        );
+                    }
+                }
+            }
         } catch (SQLException e) {
             //TODO: Add logging
             throw new RuntimeException(e);
