@@ -3,12 +3,9 @@ package presentation.ui;
 import beans.Meeting;
 import beans.MeetingRoom;
 import beans.User;
-import dao.UserDao;
-import dao.UserDaoImpl;
 import dto.OrganizeMeetingRequest;
 import enums.MeetingType;
 import exceptions.MeetingRoomNotFoundException;
-import exceptions.UserNotFoundException;
 import service.*;
 
 import java.io.BufferedReader;
@@ -29,13 +26,13 @@ public class ManagerUI {
     private static final MeetingRoomService meetingRoomService;
     private static final BookingService bookingService;
     private static final MeetingService meetingService;
-    private static final UserDao userDao;
+    private static final UserService userService;
     static{
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         meetingRoomService = new MeetingRoomServiceImpl();
         bookingService = new BookingServiceImpl();
         meetingService = new MeetingServiceImpl();
-        userDao = new UserDaoImpl();
+        userService = new UserServiceImpl();
     }
 
     /// options for the manager
@@ -108,7 +105,7 @@ public class ManagerUI {
                         mDescription
                 );
                 //TODO: deduct manager's meeting booking credits as per the cost of booking the meeting room.
-                int creditsLeft = userDao.getUserCredits(user.getUserId());
+                int creditsLeft = userService.getUserCredits(user.getUserId());
                 try {
                     int costOfMeetingRoom = meetingRoomService.getMeetingRoomCost(meetingRoomNameSelected,durationInMinutes);
                     System.out.println("meeting room cost : " + costOfMeetingRoom);
@@ -118,13 +115,13 @@ public class ManagerUI {
                         {
                             System.out.println("Meeting successfully Created...");
                             creditsLeft-=costOfMeetingRoom;
-                            userDao.setUserCredits(user.getUserId(), creditsLeft);
+                            userService.setUserCredits(user.getUserId(), creditsLeft);
                             System.out.println("credits left : " + creditsLeft);
                         }
                     }
                     else
                         System.out.println("Not Enough credits...");
-                } catch (MeetingRoomNotFoundException | UserNotFoundException e) {
+                } catch (MeetingRoomNotFoundException e) {
                     System.out.println(e.getMessage());
                 }
                 break;
